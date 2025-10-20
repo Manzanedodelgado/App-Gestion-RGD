@@ -57,6 +57,8 @@ class Appointment(BaseModel):
     date: datetime
     duration_minutes: int = 60
     notes: Optional[str] = None
+    status: str = "planificada"  # planificada, confirmada, cancelada
+    doctor: Optional[str] = None
     reminder_enabled: bool = False
     reminder_minutes_before: int = 60
     reminder_sent: bool = False
@@ -68,6 +70,8 @@ class AppointmentCreate(BaseModel):
     date: str
     duration_minutes: int = 60
     notes: Optional[str] = None
+    status: str = "planificada"
+    doctor: Optional[str] = None
     reminder_enabled: bool = False
     reminder_minutes_before: int = 60
 
