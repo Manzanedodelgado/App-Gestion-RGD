@@ -217,10 +217,10 @@ const AppointmentsNew = () => {
       </div>
 
       {/* Date Navigation */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6">
+      <div className="rounded-xl shadow-md p-6 mb-6" style={{ background: '#81D4FA' }}>
         <div className="flex items-center gap-2 mb-4">
-          <CalendarIcon className="text-blue-600" size={24} />
-          <h2 className="text-xl font-semibold text-slate-800">Navegación de Fechas</h2>
+          <CalendarIcon className="text-white" size={24} />
+          <h2 className="text-lg font-bold text-white">Navegación de Fechas</h2>
         </div>
         
         <div className="flex items-center justify-between gap-4">
@@ -228,14 +228,14 @@ const AppointmentsNew = () => {
             variant="outline"
             size="icon"
             onClick={goToPreviousDay}
-            className="rounded-full"
+            className="rounded-full bg-white border-0"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={20} style={{ color: '#333333' }} />
           </Button>
           
           <div className="flex items-center gap-3 flex-1 justify-center">
-            <CalendarIcon size={20} className="text-slate-600" />
-            <span className="text-lg font-medium text-slate-800">
+            <CalendarIcon size={20} style={{ color: '#333333' }} />
+            <span className="text-base font-normal" style={{ color: '#333333' }}>
               {format(selectedDate, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
             </span>
           </div>
@@ -244,14 +244,15 @@ const AppointmentsNew = () => {
             variant="outline"
             size="icon"
             onClick={goToNextDay}
-            className="rounded-full"
+            className="rounded-full bg-white border-0"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={20} style={{ color: '#333333' }} />
           </Button>
           
           <Button
             onClick={goToToday}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
+            className="text-white rounded-full px-6 font-bold border-0"
+            style={{ background: '#007BFF' }}
           >
             <Clock size={18} className="mr-2" />
             Hoy
