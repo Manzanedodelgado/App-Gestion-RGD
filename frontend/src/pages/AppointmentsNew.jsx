@@ -414,9 +414,13 @@ const AppointmentsNew = () => {
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-bold" style={{ color: '#212529' }}>{apt.patient_name}</h3>
                     <span className={`px-4 py-1 rounded-full text-xs font-bold ${
-                      apt.status === 'confirmada' ? 'bg-green-100 text-green-700' :
-                      apt.status === 'cancelada' ? 'bg-red-100 text-red-700' : ''
-                    }`} style={apt.status === 'planificada' ? { background: '#A0D4E5', color: '#004085' } : {}}>
+                      apt.status === 'confirmada' ? 'text-white' :
+                      apt.status === 'cancelada' ? 'text-white' : ''
+                    }`} style={
+                      apt.status === 'confirmada' ? { background: '#0000CC', color: '#FFFFFF' } :
+                      apt.status === 'cancelada' ? { background: '#FFCC00', color: '#FFFFFF' } :
+                      { background: '#E0E0E0', color: '#0066FF' }
+                    }>
                       {apt.status === 'confirmada' ? 'Confirmada' :
                        apt.status === 'cancelada' ? 'Cancelada' : 'Planificada'}
                     </span>
