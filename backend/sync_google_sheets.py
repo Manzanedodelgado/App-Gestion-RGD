@@ -146,6 +146,38 @@ async def sync_appointments():
                     print(f"Fila {row_idx}: No se pudo parsear fecha/hora, saltando...")
                     continue
                 
+                # Agregar a la lista para ordenar después
+                pending_appointments.append({
+                    'row_idx': row_idx,
+                    'nombre': nombre,
+                    'telefono': telefono,
+                    'fecha': fecha,
+                    'hora': hora,
+                    'appointment_datetime': appointment_datetime,
+                    'tratamiento': tratamiento,
+                    'doctor': doctor,
+                    'notas': notas
+                })
+                
+            except Exception as e:
+                print(f"Error procesando fila {row_idx}: {str(e)}")
+                continue
+        
+        # Ordenar citas por fecha y hora
+        pending_appointments.sort(key=lambda x: x['appointment_datetime'])
+        print(f"\n📅 Procesando {len(pending_appointments)} citas ordenadas por fecha y hora...")
+        
+        # Ahora procesar las citas ordenadas
+        for apt_data in pending_appointments:
+            try:
+                nombre = apt_data['nombre']
+                telefono = apt_data['telefono']
+                appointment_datetime = apt_data['appointment_datetime']
+                tratamiento = apt_data['tratamiento']
+                doctor = apt_data['doctor']
+                notas = apt_data['notas']
+                row_idx = apt_data['row_idx']
+                
                 # Buscar o crear paciente
                 patient = await db.patients.find_one({"phone": telefono})
                 
