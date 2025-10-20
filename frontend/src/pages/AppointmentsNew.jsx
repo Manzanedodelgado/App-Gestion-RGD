@@ -21,6 +21,7 @@ const AppointmentsNew = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [formData, setFormData] = useState({
     patient_id: '',
     title: '',
