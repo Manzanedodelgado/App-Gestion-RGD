@@ -204,6 +204,38 @@ const AppointmentsNew = () => {
   const goToNextDay = () => setSelectedDate(addDays(selectedDate, 1));
   const goToToday = () => setSelectedDate(new Date());
 
+  const handleSelectAppointment = (aptId) => {
+    setSelectedAppointments(prev => 
+      prev.includes(aptId) ? prev.filter(id => id !== aptId) : [...prev, aptId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedAppointments.length === filteredAppointments.length) {
+      setSelectedAppointments([]);
+    } else {
+      setSelectedAppointments(filteredAppointments.map(apt => apt.id));
+    }
+  };
+
+  const handleSendConfirmations = async () => {
+    if (selectedAppointments.length === 0) {
+      toast.error('Selecciona al menos una cita');
+      return;
+    }
+
+    try {
+      for (const aptId of selectedAppointments) {
+        await axios.post(`${API}/appointments/${aptId}/send-reminder`);
+      }
+      toast.success(`${selectedAppointments.length} confirmaciones enviadas`);
+      setSelectedAppointments([]);
+    } catch (error) {
+      console.error('Error sending confirmations:', error);
+      toast.error('Error al enviar confirmaciones');
+    }
+  };
+
   const handleSyncGoogleSheets = async () => {
     setIsSyncing(true);
     try {
