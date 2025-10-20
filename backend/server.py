@@ -301,6 +301,22 @@ async def send_appointment_reminder(appointment_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al enviar recordatorio: {str(e)}")
 
+
+# Get appointment statistics
+@api_router.get("/appointments/stats/summary")
+async def get_appointment_stats():
+    all_appointments = await db.appointments.find({}, {"_id": 0}).to_list(1000)
+    
+    total = len(all_appointments)
+    confirmadas = sum(1 for apt in all_appointments if apt.get('status') == 'confirmada')
+    canceladas = sum(1 for apt in all_appointments if apt.get('status') == 'cancelada')
+    
+    return {
+        "total": total,
+        "confirmadas": confirmadas,
+        "canceladas": canceladas
+    }
+
     return {"success": True}
 
 
