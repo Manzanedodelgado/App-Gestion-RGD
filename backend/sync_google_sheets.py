@@ -227,6 +227,7 @@ async def sync_appointments():
                 # Crear cita
                 appointment_doc = {
                     "id": str(uuid.uuid4()),
+                    "registro": registro,
                     "patient_id": patient_id,
                     "patient_name": nombre,
                     "patient_phone": telefono,
@@ -234,7 +235,7 @@ async def sync_appointments():
                     "date": appointment_datetime.isoformat(),
                     "duration_minutes": 30,
                     "notes": notas,
-                    "status": "planificada",
+                    "status": estado_cita.lower() if estado_cita else "planificada",
                     "doctor": doctor or "Dra. Virginia Tresgallo",
                     "reminder_enabled": True,
                     "reminder_minutes_before": 1440,  # 1 día antes
