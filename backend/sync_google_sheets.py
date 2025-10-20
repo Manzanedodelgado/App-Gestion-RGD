@@ -15,7 +15,7 @@ load_dotenv(ROOT_DIR / '.env')
 # Google Sheets setup
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 SPREADSHEET_ID = '1MBDBHQ08XGuf5LxVHCFhHDagIazFkpBnxwqyEQIBJrQ'
-RANGE_NAME = 'Citas!A:Z'  # Cambiar a la hoja "Citas"
+RANGE_NAME = 'Hoja 1!A:Z'  # La hoja se llama "Hoja 1"
 
 # MongoDB setup
 mongo_url = os.environ['MONGO_URL']
