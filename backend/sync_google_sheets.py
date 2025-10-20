@@ -124,20 +124,22 @@ async def sync_appointments():
                         return row[idx].strip() if row[idx] else ''
                     return ''
                 
-                # Extraer datos del paciente según los headers de la sheet
+                # Extraer datos según el script correcto
+                registro = get_value('registro')
                 apellidos = get_value('apellidos')
                 nombre_pila = get_value('nombre')
                 nombre = f"{nombre_pila} {apellidos}".strip() if (nombre_pila or apellidos) else ''
-                telefono = get_value('telmovil') or get_value('teléfono') or get_value('telefono')
+                telefono = get_value('telmovil') or get_value('tel_movil') or get_value('tel_móvil')
                 fecha = get_value('fecha')
                 hora = get_value('hora')
-                tratamiento = get_value('tratamiento') or get_value('tipo') or get_value('motivo')
-                doctor = get_value('odontologo') or get_value('doctor') or get_value('dra')
-                notas = get_value('notas') or get_value('observaciones')
+                tratamiento = get_value('tratamiento')
+                doctor = get_value('odontologo') or get_value('odontólogo')
+                notas = get_value('notas')
+                estado_cita = get_value('estadocita') or get_value('estado_cita')
                 
-                # Validar datos mínimos
-                if not nombre or not telefono or not fecha or not hora:
-                    print(f"Fila {row_idx}: Datos incompletos, saltando...")
+                # Validar datos mínimos (registro es obligatorio para evitar duplicados)
+                if not registro or not nombre or not telefono or not fecha or not hora:
+                    print(f"Fila {row_idx}: Datos incompletos (falta registro, nombre, teléfono, fecha u hora), saltando...")
                     continue
                 
                 # Parsear fecha y hora
