@@ -1,98 +1,297 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar, MessageSquare, Users, Clock, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Badge } from '@/components/ui/badge';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Dashboard = () => {
-  const [stats, setStats] = useState({
-    patients: 0,
-    appointments: 0,
-    messagesReceived: 0,
-    whatsappConnected: false
-  });
+const statusConfig = {
+  planificada: {
+    color: 'bg-[#00C1DE]/10 text-[#00C1DE] border-[#00C1DE]',
+    label: 'Planificada'
+  },
+  confirmada: {
+    color: 'bg-[#00D6B9]/10 text-[#00D6B9] border-[#00D6B9]',
+    label: 'Confirmada'
+  },
+  cancelada: {
+    color: 'bg-[#F9F071]/10 text-[#D97706] border-[#F9F071]',
+    label: 'Cancelada'
+  },
+  finalizada: {
+    color: 'bg-[#8FF38B]/10 text-[#059669] border-[#8FF38B]',
+    label: 'Finalizada'
+  }
+};
+
+function DashboardContent() {
+  const [appointments, setAppointments] = useState([]);
+  const [todayAppointments, setTodayAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [whatsappStatus, setWhatsappStatus] = useState({ ready: false });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
+    loadData();
   }, []);
 
-  const fetchStats = async () => {
+  const loadData = async () => {
+    setIsLoading(true);
     try {
-      const [patientsRes, appointmentsRes, whatsappRes] = await Promise.all([
-        axios.get(`${API}/patients`),
+      const [appointmentsRes, patientsRes, whatsappRes] = await Promise.all([
         axios.get(`${API}/appointments`),
+        axios.get(`${API}/patients`),
         axios.get(`${API}/whatsapp/status`)
       ]);
 
-      setStats({
-        patients: patientsRes.data.length,
-        appointments: appointmentsRes.data.length,
-        messagesReceived: 0,
-        whatsappConnected: whatsappRes.data.ready
+      setAppointments(appointmentsRes.data);
+      setPatients(patientsRes.data);
+      setWhatsappStatus(whatsappRes.data);
+
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const filtered = appointmentsRes.data.filter(apt => {
+        if (!apt.date) return false;
+        const aptDate = format(new Date(apt.date), 'yyyy-MM-dd');
+        return aptDate === today;
       });
+      filtered.sort((a, b) => {
+        return new Date(a.date) - new Date(b.date);
+      });
+      setTodayAppointments(filtered);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('Error loading data:', error);
+      setAppointments([]);
+      setTodayAppointments([]);
+      setPatients([]);
     }
+    setIsLoading(false);
   };
 
+  const confirmedToday = todayAppointments.filter(a => a.reminder_sent).length;
+  const upcomingAppointments = appointments.filter(a => new Date(a.date) >= new Date()).length;
+
   return (
-    <div className="page-container" data-testid="dashboard-page">
-      <div className="page-header">
-        <h1 className="page-title">Dashboard</h1>
-        <p className="page-subtitle">Resumen general del sistema</p>
+    <div className="min-h-screen">
+      {/* Header */}
+      <div className="p-6 pb-0">
+        <div className="bg-gradient-to-r from-[#2E3192] to-[#0071BC] px-6 py-6 rounded-3xl shadow-xl">
+          <h1 className="text-xl font-bold text-white mb-1">Panel de Control</h1>
+          <p className="text-xs text-[#9EEDFC]">Rubio García DentApp - Sistema de Gestión Dental</p>
+        </div>
       </div>
 
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon stat-icon-blue">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
+      <div className="p-6 space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-[#0071BC] to-[#65C8D0] rounded-xl shadow-md p-4 flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-xs text-white/90 font-medium">Citas de Hoy</p>
+              <p className="text-3xl font-bold text-white">{todayAppointments.length}</p>
+            </div>
           </div>
-          <div>
-            <p className="stat-label">Total Pacientes</p>
-            <p className="stat-value">{stats.patients}</p>
+
+          <div className="bg-gradient-to-br from-[#65C8D0] to-[#9EEDFC] rounded-xl shadow-md p-4 flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <Users className="w-6 h-6 text-[#2E3192]" />
+            </div>
+            <div>
+              <p className="text-xs text-[#2E3192] font-medium">Total Pacientes</p>
+              <p className="text-3xl font-bold text-[#2E3192]">{patients.length}</p>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-[#FBBF24] to-[#F59E0B] rounded-xl shadow-md p-4 flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <MessageSquare className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-xs text-white font-medium">Citas Próximas</p>
+              <p className="text-3xl font-bold text-white">{upcomingAppointments}</p>
+            </div>
+          </div>
+
+          <div className={`bg-gradient-to-br ${whatsappStatus.ready ? 'from-[#10B981] to-[#059669]' : 'from-[#EF4444] to-[#DC2626]'} rounded-xl shadow-md p-4 flex items-center gap-3`}>
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <MessageSquare className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-xs text-white font-medium">Estado WhatsApp</p>
+              <p className="text-lg font-bold text-white">{whatsappStatus.ready ? 'Conectado' : 'Desconectado'}</p>
+            </div>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon stat-icon-green">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <div>
-            <p className="stat-label">Citas Programadas</p>
-            <p className="stat-value">{stats.appointments}</p>
-          </div>
+        {/* Cards Principales */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Citas de Hoy */}
+          <Card className="bg-white rounded-2xl shadow-lg overflow-hidden border-none">
+            <CardHeader className="bg-gradient-to-r from-[#0071BC] to-[#65C8D0] p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold text-white">Citas de Hoy</CardTitle>
+                    <p className="text-xs text-white/80 mt-0.5">
+                      {format(new Date(), "d 'de' MMMM", { locale: es })} - {format(new Date(), 'dd/MM/yyyy')}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-3xl font-bold text-white">{todayAppointments.length}</div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 max-h-[400px] overflow-y-auto">
+              {todayAppointments.length === 0 ? (
+                <div className="text-center py-12">
+                  <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm text-gray-500">No hay citas programadas hoy</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {todayAppointments.map((apt) => {
+                    const statusInfo = statusConfig.planificada;
+                    return (
+                      <div key={apt.id} className="flex items-center gap-3 p-3 bg-white border-l-4 border-[#0071BC] rounded-lg hover:shadow transition-shadow">
+                        <div className="text-center min-w-[50px]">
+                          <p className="text-lg font-bold text-white bg-gradient-to-br from-[#2E3192] to-[#0071BC] px-2 py-1 rounded-lg">
+                            {format(new Date(apt.date), 'HH:mm')}
+                          </p>
+                          <p className="text-[10px] text-gray-500 mt-1">{apt.duration_minutes} min</p>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-gray-900">{apt.patient_name}</h4>
+                          <p className="text-xs text-gray-600">{apt.title}</p>
+                          {apt.notes && <p className="text-[10px] text-gray-500 mt-1">{apt.notes}</p>}
+                        </div>
+                        <span className={`px-3 py-1 ${statusInfo.color} border rounded-full text-[10px] font-semibold whitespace-nowrap`}>
+                          {apt.reminder_sent ? 'Recordatorio Enviado' : 'Pendiente'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Próximas Citas */}
+          <Card className="bg-white rounded-2xl shadow-lg overflow-hidden border-none">
+            <CardHeader className="bg-gradient-to-r from-[#FBBF24] to-[#F59E0B] p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold text-white">Próximas Citas</CardTitle>
+                    <p className="text-xs text-white/80 mt-0.5">
+                      Citas programadas próximamente
+                    </p>
+                  </div>
+                </div>
+                <div className="text-3xl font-bold text-white">{upcomingAppointments}</div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 max-h-[400px] overflow-y-auto">
+              {upcomingAppointments === 0 ? (
+                <div className="text-center py-12">
+                  <CheckCircle2 className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm text-gray-500">No hay citas programadas próximamente</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {appointments
+                    .filter(a => new Date(a.date) >= new Date())
+                    .slice(0, 5)
+                    .map((apt) => (
+                      <div key={apt.id} className="flex items-center gap-3 p-3 bg-white border-l-4 border-[#FBBF24] rounded-lg hover:shadow transition-shadow">
+                        <div className="text-center min-w-[70px]">
+                          <p className="text-xs font-bold text-[#F59E0B]">
+                            {format(new Date(apt.date), 'dd MMM', { locale: es })}
+                          </p>
+                          <p className="text-sm font-bold text-gray-900">
+                            {format(new Date(apt.date), 'HH:mm')}
+                          </p>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-gray-900">{apt.patient_name}</h4>
+                          <p className="text-xs text-gray-600">{apt.title}</p>
+                        </div>
+                        {apt.reminder_enabled && (
+                          <Badge className="bg-[#65C8D0] text-white text-xs">
+                            Recordatorio ON
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon stat-icon-purple">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-          </div>
-          <div>
-            <p className="stat-label">Mensajes Recibidos</p>
-            <p className="stat-value">{stats.messagesReceived}</p>
-          </div>
-        </div>
+        {/* Estadísticas */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          <Card className="bg-white rounded-2xl shadow-lg border-none">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="w-5 h-5 text-[#0071BC]" />
+                <h3 className="text-base font-semibold text-gray-900">Tasa de Confirmación</h3>
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-gray-600">Citas Confirmadas</span>
+                  <span className="text-sm font-bold text-[#0071BC]">
+                    {todayAppointments.length > 0 ? Math.round((confirmedToday / todayAppointments.length) * 100) : 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-gradient-to-r from-[#0071BC] to-[#65C8D0] h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${todayAppointments.length > 0 ? (confirmedToday / todayAppointments.length) * 100 : 0}%` }}
+                  ></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-        <div className="stat-card">
-          <div className={`stat-icon ${stats.whatsappConnected ? 'stat-icon-success' : 'stat-icon-warning'}`}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <p className="stat-label">Estado WhatsApp</p>
-            <p className="stat-value text-sm">{stats.whatsappConnected ? 'Conectado' : 'Desconectado'}</p>
-          </div>
+          <Card className="bg-white rounded-2xl shadow-lg border-none">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="w-5 h-5 text-[#8FF38B]" />
+                <h3 className="text-base font-semibold text-gray-900">Sistema de Recordatorios</h3>
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-gray-600">Recordatorios Activos</span>
+                  <span className="text-sm font-bold text-gray-900">
+                    {appointments.filter(a => a.reminder_enabled).length}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-[#8FF38B] h-2 rounded-full" 
+                    style={{ width: `${appointments.length > 0 ? (appointments.filter(a => a.reminder_enabled).length / appointments.length) * 100 : 0}%` }}
+                  ></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default Dashboard;
+export default function Dashboard() {
+  return <DashboardContent />;
+}
