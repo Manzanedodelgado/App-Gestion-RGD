@@ -185,30 +185,30 @@ const AppointmentsNew = () => {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-6 text-white shadow-lg">
+        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #53B3D9, #70CFEA)' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-cyan-100 mb-1">Total</p>
+              <p className="text-white text-base mb-1">Total</p>
               <p className="text-4xl font-bold">{stats.total}</p>
             </div>
             <CalendarIcon size={48} className="opacity-30" />
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-blue-300 to-cyan-400 rounded-xl p-6 text-white shadow-lg">
+        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #72D1EA, #96E3F8)' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100 mb-1">Confirmadas</p>
+              <p className="text-white text-base mb-1">Confirmadas</p>
               <p className="text-4xl font-bold">{stats.confirmadas}</p>
             </div>
             <Users size={48} className="opacity-30" />
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-yellow-400 to-orange-400 rounded-xl p-6 text-white shadow-lg">
+        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: '#FFC107' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-yellow-100 mb-1">Canceladas</p>
+              <p className="text-white text-base mb-1">Canceladas</p>
               <p className="text-4xl font-bold">{stats.canceladas}</p>
             </div>
             <XCircle size={48} className="opacity-30" />
