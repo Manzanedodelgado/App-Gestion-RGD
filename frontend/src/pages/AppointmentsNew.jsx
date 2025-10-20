@@ -217,10 +217,10 @@ const AppointmentsNew = () => {
       </div>
 
       {/* Date Navigation */}
-      <div className="rounded-xl shadow-md p-6 mb-6" style={{ background: '#81D4FA' }}>
+      <div className="rounded-xl shadow-md p-6 mb-6" style={{ background: '#E0E0E0' }}>
         <div className="flex items-center gap-2 mb-4">
-          <CalendarIcon className="text-white" size={24} />
-          <h2 className="text-lg font-bold text-white">Navegación de Fechas</h2>
+          <CalendarIcon style={{ color: '#0066FF' }} size={24} />
+          <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Navegación de Fechas</h2>
         </div>
         
         <div className="flex items-center justify-between gap-4">
@@ -252,7 +252,7 @@ const AppointmentsNew = () => {
           <Button
             onClick={goToToday}
             className="text-white rounded-full px-6 font-bold border-0"
-            style={{ background: '#007BFF' }}
+            style={{ background: '#0000CC' }}
           >
             <Clock size={18} className="mr-2" />
             Hoy
