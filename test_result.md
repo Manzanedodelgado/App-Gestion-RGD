@@ -105,6 +105,30 @@
 user_problem_statement: "Completar la implementación de la página de Citas (Appointments) con diseño personalizado según la imagen proporcionada por el usuario, incluyendo navegación de fechas, tarjetas de estadísticas, y gestión completa de citas con cambio de estados."
 
 backend:
+  - task: "Servicio WhatsApp con whatsapp-web.js"
+    implemented: true
+    working: true
+    file: "/app/whatsapp-service/index.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Instalado Chromium y configurado whatsapp-web.js. QR code generándose correctamente. Servicio corriendo en puerto 3001"
+  
+  - task: "Endpoints proxy de WhatsApp en backend"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Endpoints /api/whatsapp/* funcionando correctamente como proxy al servicio WhatsApp"
+  
   - task: "Actualizar modelo Appointment con campos status y doctor"
     implemented: true
     working: true
