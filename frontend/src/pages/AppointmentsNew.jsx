@@ -191,6 +191,7 @@ const AppointmentsNew = () => {
       toast.success(
         `Sincronización completada: ${response.data.appointments_synced} citas, ${response.data.patients_synced} pacientes nuevos`
       );
+      setLastSyncTime(new Date());
       fetchAppointments();
       fetchStats();
     } catch (error) {
