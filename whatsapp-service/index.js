@@ -201,8 +201,8 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`WhatsApp service running on port ${PORT} (Mock Mode)`);
-  console.log('NOTA: Este es un modo de demostración.');
-  console.log('Para conectar WhatsApp real, necesitarás escanear el QR con tu teléfono.');
-  initializeMockData();
+  console.log(`WhatsApp service running on port ${PORT}`);
+  console.log('Inicializando cliente de WhatsApp...');
+  console.log('Para conectar, escanea el código QR que aparecerá en la interfaz web');
+  initializeWhatsApp();
 });
