@@ -185,7 +185,7 @@ const AppointmentsNew = () => {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #53B3D9, #70CFEA)' }}>
+        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #0066FF, #0088FF)' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-base mb-1">Total</p>
@@ -195,7 +195,7 @@ const AppointmentsNew = () => {
           </div>
         </div>
         
-        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #72D1EA, #96E3F8)' }}>
+        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #0088FF, #00AAFF)' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-base mb-1">Confirmadas</p>
@@ -205,7 +205,7 @@ const AppointmentsNew = () => {
           </div>
         </div>
         
-        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: '#FFC107' }}>
+        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: '#FFCC00' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-base mb-1">Canceladas</p>
