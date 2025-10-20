@@ -456,120 +456,90 @@ const AppointmentsNew = () => {
           filteredAppointments.map((apt) => (
             <div
               key={apt.id}
-              className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-200 border-l-4 overflow-hidden"
+              className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow border-l-4"
               style={{ 
-                borderLeftColor: apt.estado_cita === 'confirmada' ? '#10B981' :
-                                 apt.estado_cita === 'cancelada' ? '#F59E0B' :
-                                 apt.estado_cita === 'anulada' ? '#EF4444' :
-                                 apt.estado_cita === 'finalizada' ? '#6B7280' : '#3B82F6'
+                borderLeftColor: apt.estado_cita === 'confirmada' || apt.estado_cita === 'finalizada' ? '#0071BC' :
+                                 apt.estado_cita === 'cancelada' ? '#FBBF24' :
+                                 apt.estado_cita === 'anulada' ? '#F59E0B' : '#0000FF'
               }}
             >
-              <div className="p-5">
-                {/* Header con nombre y estado */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">
-                      {apt.nombre} {apt.apellidos}
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">{apt.tratamiento || apt.title}</p>
-                  </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${
-                    apt.estado_cita === 'confirmada' ? 'bg-green-100 text-green-700 border border-green-200' :
-                    apt.estado_cita === 'cancelada' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                    apt.estado_cita === 'anulada' ? 'bg-red-100 text-red-700 border border-red-200' :
-                    apt.estado_cita === 'finalizada' ? 'bg-gray-100 text-gray-700 border border-gray-200' :
-                    'bg-blue-100 text-blue-700 border border-blue-200'
-                  }`}>
-                    {apt.estado_cita === 'confirmada' ? '✓ Confirmada' :
-                     apt.estado_cita === 'cancelada' ? '⊗ Cancelada' :
-                     apt.estado_cita === 'anulada' ? '✕ Anulada' :
-                     apt.estado_cita === 'finalizada' ? '✓ Finalizada' : '○ Planificada'}
-                  </span>
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <h3 className="text-base font-bold text-gray-900">{apt.nombre} {apt.apellidos}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{apt.tratamiento || apt.title}</p>
                 </div>
+                <span className={`px-3 py-1 rounded-lg text-xs font-bold text-white ml-3`}
+                  style={{ 
+                    background: apt.estado_cita === 'confirmada' || apt.estado_cita === 'finalizada' ? 
+                      'linear-gradient(to right, #0071BC, #65C8D0)' :
+                      apt.estado_cita === 'cancelada' || apt.estado_cita === 'anulada' ? 
+                      'linear-gradient(to right, #FBBF24, #F59E0B)' :
+                      'linear-gradient(to right, #0000FF, #0071BC)'
+                  }}>
+                  {apt.estado_cita === 'confirmada' ? 'Confirmada' :
+                   apt.estado_cita === 'cancelada' ? 'Cancelada' :
+                   apt.estado_cita === 'anulada' ? 'Anulada' :
+                   apt.estado_cita === 'finalizada' ? 'Finalizada' : 'Planificada'}
+                </span>
+              </div>
 
-                {/* Información en grid */}
-                <div className="grid grid-cols-2 gap-4 mb-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-3">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-white rounded-lg p-2 shadow-sm">
-                      <CalendarIcon size={16} className="text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">Fecha</p>
-                      <p className="text-sm font-semibold text-gray-900">{apt.fecha}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="bg-white rounded-lg p-2 shadow-sm">
-                      <Clock size={16} className="text-cyan-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">Hora</p>
-                      <p className="text-sm font-semibold text-gray-900">{apt.hora}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="bg-white rounded-lg p-2 shadow-sm">
-                      <Users size={16} className="text-indigo-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">Doctor</p>
-                      <p className="text-sm font-semibold text-gray-900">{apt.odontologo || apt.doctor || 'No asignado'}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="bg-white rounded-lg p-2 shadow-sm">
-                      <span className="text-lg">📞</span>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">Teléfono</p>
-                      <p className="text-sm font-semibold text-gray-900">{apt.tel_movil || apt.patient_phone}</p>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-700 mb-3">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon size={14} style={{ color: '#0071BC' }} />
+                  <span className="font-medium">{apt.fecha}</span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Clock size={14} style={{ color: '#0071BC' }} />
+                  <span className="font-medium">{apt.hora}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users size={14} style={{ color: '#0071BC' }} />
+                  <span className="font-medium">{apt.odontologo || apt.doctor || 'Sin asignar'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>📞</span>
+                  <span className="font-medium">{apt.tel_movil || apt.patient_phone}</span>
+                </div>
+              </div>
 
-                {/* Notas */}
-                {(apt.notas || apt.notes) && (
-                  <div className="mb-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg p-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-amber-600 font-bold text-sm">📝</span>
-                      <div className="flex-1">
-                        <p className="text-xs font-semibold text-amber-800 mb-1">Notas:</p>
-                        <p className="text-sm text-amber-900">{apt.notas || apt.notes}</p>
-                      </div>
-                    </div>
-                  </div>
+              {(apt.notas || apt.notes) && (
+                <div className="mt-3 text-sm rounded-lg p-3 border-l-4" style={{ 
+                  backgroundColor: '#FEF3C7',
+                  borderLeftColor: '#FBBF24',
+                  color: '#78350F'
+                }}>
+                  <span className="font-bold">Nota:</span> {apt.notas || apt.notes}
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 mt-4 pt-3 border-t">
+                {(apt.estado_cita === 'planificada' || apt.status === 'planificada') && (
+                  <Button
+                    onClick={() => handleStatusChange(apt.id, 'confirmada')}
+                    className="h-8 text-white text-xs font-bold rounded-lg border-0"
+                    style={{ background: 'linear-gradient(to right, #0071BC, #65C8D0)' }}
+                  >
+                    <Check size={14} className="mr-1" />
+                    Confirmar
+                  </Button>
                 )}
-
-                {/* Botones de acción */}
-                <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-                  {(apt.estado_cita === 'planificada' || apt.status === 'planificada') && (
-                    <Button
-                      onClick={() => handleStatusChange(apt.id, 'confirmada')}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg h-9"
-                    >
-                      <Check size={14} className="mr-1" />
-                      Confirmar
-                    </Button>
-                  )}
-                  <Button
-                    onClick={() => handleSendReminder(apt.id)}
-                    variant="outline"
-                    className="flex-1 border-cyan-300 text-cyan-700 hover:bg-cyan-50 text-xs font-semibold rounded-lg h-9"
-                  >
-                    <Send size={14} className="mr-1" />
-                    Recordatorio
-                  </Button>
-                  <Button
-                    onClick={() => handleEdit(apt)}
-                    variant="outline"
-                    className="h-9 w-9 border-gray-300 text-gray-600 hover:bg-gray-50 rounded-lg p-0"
-                  >
-                    <MoreVertical size={16} />
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => handleSendReminder(apt.id)}
+                  variant="outline"
+                  className="h-8 text-xs font-bold rounded-lg"
+                  style={{ borderColor: '#0071BC', color: '#0071BC' }}
+                >
+                  <Send size={14} className="mr-1" />
+                  Recordatorio
+                </Button>
+                <Button
+                  onClick={() => handleEdit(apt)}
+                  variant="outline"
+                  className="h-8 w-8 rounded-lg p-0"
+                  style={{ borderColor: '#6B7280', color: '#6B7280' }}
+                >
+                  <MoreVertical size={14} />
+                </Button>
               </div>
             </div>
           ))
