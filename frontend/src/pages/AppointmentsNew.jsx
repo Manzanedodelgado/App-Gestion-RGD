@@ -267,7 +267,7 @@ const AppointmentsNew = () => {
           if (!open) resetForm();
         }}>
           <DialogTrigger asChild>
-            <Button className="text-white rounded-full px-6 border-0" style={{ background: '#53B3D9' }}>
+            <Button className="text-white rounded-full px-6 border-0" style={{ background: '#0066FF' }}>
               <Plus size={18} className="mr-2" />
               Nueva Cita
             </Button>
