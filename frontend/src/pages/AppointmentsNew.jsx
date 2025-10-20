@@ -325,7 +325,7 @@ const AppointmentsNew = () => {
           {lastSyncTime ? (
             <span>Última sincronización: {format(lastSyncTime, "HH:mm:ss")}</span>
           ) : (
-            <span>Sincronización automática cada 15 minutos</span>
+            <span>🔄 Sincronización automática cada 5 minutos</span>
           )}
         </div>
         
