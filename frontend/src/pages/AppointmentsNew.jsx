@@ -460,8 +460,8 @@ const AppointmentsNew = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleStatusChange(apt.id, 'confirmada')}
-                      className="hover:bg-green-50"
-                      style={{ color: '#28A745' }}
+                      className="hover:bg-blue-50"
+                      style={{ color: '#0000CC' }}
                       title="Confirmar cita"
                     >
                       <Check size={20} />
@@ -472,7 +472,7 @@ const AppointmentsNew = () => {
                     size="icon"
                     onClick={() => handleSendReminder(apt.id)}
                     className="hover:bg-gray-50"
-                    style={{ color: '#333333' }}
+                    style={{ color: '#0066FF' }}
                     title="Enviar recordatorio"
                   >
                     <Send size={20} />
