@@ -21,9 +21,18 @@ let client;
 let isReady = false;
 let qrCode = null;
 let clientInfo = null;
+let isInitializing = false;
 
 // Initialize WhatsApp client
 function initializeClient() {
+  if (isInitializing) {
+    console.log('Client is already initializing...');
+    return;
+  }
+  
+  isInitializing = true;
+  console.log('Starting WhatsApp client initialization...');
+  
   client = new Client({
     authStrategy: new LocalAuth({
       dataPath: './.wwebjs_auth'
@@ -38,6 +47,7 @@ function initializeClient() {
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
+        '--single-process',
         '--disable-gpu'
       ]
     }
