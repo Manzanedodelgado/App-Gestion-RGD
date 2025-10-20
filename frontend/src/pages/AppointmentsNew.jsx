@@ -168,59 +168,65 @@ const AppointmentsNew = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
       {/* Header */}
-      <div className="rounded-2xl shadow-lg p-6 mb-6" style={{ background: 'linear-gradient(to right, #0055DD, #0077FF)' }}>
+      <div className="rounded-2xl shadow-lg p-6 mb-6 bg-gradient-to-r from-[#2E3192] to-[#0071BC]">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white mb-1">Agenda de Citas</h1>
-            <p className="text-sm" style={{ color: '#E0E0E0' }}>Rubio García DentApp - Sistema de Gestión Dental</p>
+            <p className="text-sm text-[#2E3192] opacity-80">Rubio García DentApp - Sistema de Gestión Dental</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-white text-sm">Modo Agenda</span>
             <div className="bg-white rounded-full p-1">
-              <div className="w-12 h-6 rounded-full" style={{ background: '#0000CC' }}></div>
+              <div className="w-12 h-6 rounded-full bg-[#2E3192]"></div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #0066FF, #0088FF)' }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-0">
+        <div className="rounded-xl p-6 text-white shadow-lg bg-gradient-to-br from-[#65C8D0] to-[#9EEDFC]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-base mb-1">Total</p>
               <p className="text-4xl font-bold">{stats.total}</p>
             </div>
-            <CalendarIcon size={48} className="opacity-30" />
+            <div className="w-12 h-12 flex items-center justify-center">
+              <CalendarIcon size={48} className="opacity-30" />
+            </div>
           </div>
         </div>
         
-        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: 'linear-gradient(to bottom right, #0088FF, #00AAFF)' }}>
+        <div className="rounded-xl p-6 text-white shadow-lg bg-gradient-to-br from-[#65C8D0] to-[#9EEDFC]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-base mb-1">Confirmadas</p>
               <p className="text-4xl font-bold">{stats.confirmadas}</p>
             </div>
-            <Users size={48} className="opacity-30" />
+            <div className="w-12 h-12 flex items-center justify-center">
+              <Users size={48} className="opacity-30" />
+            </div>
           </div>
         </div>
         
-        <div className="rounded-xl p-6 text-white shadow-lg" style={{ background: '#FFCC00' }}>
+        <div className="rounded-xl p-6 text-white shadow-lg bg-gradient-to-br from-[#FBBF24] to-[#FDE68A]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-base mb-1">Canceladas</p>
               <p className="text-4xl font-bold">{stats.canceladas}</p>
             </div>
-            <XCircle size={48} className="opacity-30" />
+            <div className="w-12 h-12 flex items-center justify-center">
+              <XCircle size={48} className="opacity-30" />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Date Navigation */}
-      <div className="rounded-xl shadow-md p-6 mb-6" style={{ background: '#E0E0E0' }}>
+      <div className="rounded-xl shadow-md p-6 mt-6 mb-6 bg-gradient-to-br from-[#65C8D0] to-[#9EEDFC]">
         <div className="flex items-center gap-2 mb-4">
-          <CalendarIcon style={{ color: '#0066FF' }} size={24} />
-          <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Navegación de Fechas</h2>
+          <CalendarIcon className="text-white" size={24} />
+          <h2 className="text-lg font-bold text-white">Navegación de Fechas</h2>
         </div>
         
         <div className="flex items-center justify-between gap-4">
@@ -228,14 +234,14 @@ const AppointmentsNew = () => {
             variant="outline"
             size="icon"
             onClick={goToPreviousDay}
-            className="rounded-full bg-white border-0"
+            className="h-10 w-10 rounded-full bg-white border-0 hover:bg-gray-100"
           >
-            <ChevronLeft size={20} style={{ color: '#333333' }} />
+            <ChevronLeft size={20} className="text-gray-700" />
           </Button>
           
-          <div className="flex items-center gap-3 flex-1 justify-center">
-            <CalendarIcon size={20} style={{ color: '#333333' }} />
-            <span className="text-base font-normal" style={{ color: '#333333' }}>
+          <div className="flex items-center gap-3 h-10 w-72 bg-white rounded-lg px-4 justify-center">
+            <CalendarIcon size={16} className="text-gray-700" />
+            <span className="text-sm font-medium text-gray-700">
               {format(selectedDate, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
             </span>
           </div>
@@ -244,17 +250,16 @@ const AppointmentsNew = () => {
             variant="outline"
             size="icon"
             onClick={goToNextDay}
-            className="rounded-full bg-white border-0"
+            className="h-10 w-10 rounded-full bg-white border-0 hover:bg-gray-100"
           >
-            <ChevronRight size={20} style={{ color: '#333333' }} />
+            <ChevronRight size={20} className="text-gray-700" />
           </Button>
           
           <Button
             onClick={goToToday}
-            className="text-white rounded-full px-6 font-bold border-0"
-            style={{ background: '#0000CC' }}
+            className="h-10 text-white rounded-full px-6 font-medium border-0 bg-[#2E3192] hover:bg-[#0071BC]"
           >
-            <Clock size={18} className="mr-2" />
+            <Clock size={16} className="mr-2" />
             Hoy
           </Button>
         </div>
@@ -267,7 +272,7 @@ const AppointmentsNew = () => {
           if (!open) resetForm();
         }}>
           <DialogTrigger asChild>
-            <Button className="text-white rounded-full px-6 border-0" style={{ background: '#0066FF' }}>
+            <Button className="h-10 text-white rounded-full px-6 border-0 bg-[#65C8D0] hover:bg-[#9EEDFC]">
               <Plus size={18} className="mr-2" />
               Nueva Cita
             </Button>
