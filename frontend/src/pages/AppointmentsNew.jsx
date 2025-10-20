@@ -497,9 +497,9 @@ const AppointmentsNew = () => {
                     </div>
                   </div>
                   
-                  {apt.notes && (
+                  {(apt.notas || apt.notes) && (
                     <div className="mt-2 text-[10px] rounded p-1.5 bg-gray-50 text-gray-600">
-                      <span className="font-medium">Nota:</span> {apt.notes}
+                      <span className="font-medium">Nota:</span> {apt.notas || apt.notes}
                     </div>
                   )}
                 </div>
