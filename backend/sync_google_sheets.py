@@ -121,14 +121,16 @@ async def sync_appointments():
                         return row[idx].strip() if row[idx] else ''
                     return ''
                 
-                # Extraer datos del paciente
-                nombre = get_value('nombre') or get_value('paciente')
-                telefono = get_value('teléfono') or get_value('telefono') or get_value('móvil')
+                # Extraer datos del paciente según los headers de la sheet
+                apellidos = get_value('apellidos')
+                nombre_pila = get_value('nombre')
+                nombre = f"{nombre_pila} {apellidos}".strip() if (nombre_pila or apellidos) else ''
+                telefono = get_value('telmovil') or get_value('teléfono') or get_value('telefono')
                 fecha = get_value('fecha')
                 hora = get_value('hora')
                 tratamiento = get_value('tratamiento') or get_value('tipo') or get_value('motivo')
-                doctor = get_value('doctor') or get_value('dra') or get_value('profesional')
-                notas = get_value('notas') or get_value('observaciones') or get_value('nota')
+                doctor = get_value('odontologo') or get_value('doctor') or get_value('dra')
+                notas = get_value('notas') or get_value('observaciones')
                 
                 # Validar datos mínimos
                 if not nombre or not telefono or not fecha or not hora:
