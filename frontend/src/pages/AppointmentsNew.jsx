@@ -264,10 +264,12 @@ const AppointmentsNew = () => {
             <p className="text-xs text-[#2E3192] opacity-80">Rubio García DentApp - Sistema de Gestión Dental</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-white text-xs">Modo Agenda</span>
-            <div className="bg-white rounded-full p-0.5">
-              <div className="w-9 h-4 rounded-full bg-[#2E3192]"></div>
-            </div>
+            <span className="text-white text-xs font-medium">{isConfirmationMode ? 'Modo Confirmaciones' : 'Modo Agenda'}</span>
+            <Switch
+              checked={isConfirmationMode}
+              onCheckedChange={setIsConfirmationMode}
+              className="data-[state=checked]:bg-white"
+            />
           </div>
         </div>
       </div>
