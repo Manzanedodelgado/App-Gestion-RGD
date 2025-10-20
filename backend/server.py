@@ -126,7 +126,10 @@ async def get_whatsapp_messages(chat_id: str):
 async def send_whatsapp_message(request: SendMessageRequest):
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(f"{WHATSAPP_SERVICE_URL}/send-message", json={\n                "number": request.number,\n                "message": request.message\n            })
+            response = await client.post(f"{WHATSAPP_SERVICE_URL}/send-message", json={
+                "number": request.number,
+                "message": request.message
+            })
             return response.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
