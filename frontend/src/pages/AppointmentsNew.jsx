@@ -659,6 +659,8 @@ const AppointmentsNew = () => {
                   <MoreVertical size={14} />
                 </Button>
               </div>
+                </div>
+              </div>
             </div>
           ))
         )}
