@@ -311,6 +311,33 @@ async def get_appointment_stats():
     all_appointments = await db.appointments.find({}, {"_id": 0}).to_list(1000)
     
     total = len(all_appointments)
+
+# Google Sheets Sync
+@api_router.post("/appointments/sync-google-sheets")
+async def sync_google_sheets():
+    """Sync appointments from Google Sheets"""
+    try:
+        # Import the sync function
+        import sys
+        sys.path.insert(0, str(ROOT_DIR))
+        from sync_google_sheets import sync_appointments
+        
+        # Run sync
+        result = await sync_appointments()
+        
+        if result.get('success'):
+            return {
+                "success": True,
+                "message": "Sincronización completada exitosamente",
+                "patients_synced": result.get('patients_synced', 0),
+                "appointments_synced": result.get('appointments_synced', 0)
+            }
+        else:
+            raise HTTPException(status_code=500, detail=result.get('error', 'Error desconocido'))
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la sincronización: {str(e)}")
+
     confirmadas = sum(1 for apt in all_appointments if apt.get('status') == 'confirmada')
     canceladas = sum(1 for apt in all_appointments if apt.get('status') == 'cancelada')
     
