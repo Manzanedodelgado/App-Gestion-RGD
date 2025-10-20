@@ -48,7 +48,7 @@ class PatientCreate(BaseModel):
     notes: Optional[str] = None
 
 class Appointment(BaseModel):
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="allow")  # Permitir campos adicionales
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     patient_id: str
     patient_name: str
@@ -63,6 +63,16 @@ class Appointment(BaseModel):
     reminder_minutes_before: int = 60
     reminder_sent: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    # Campos adicionales para el frontend
+    registro: Optional[str] = None
+    nombre: Optional[str] = None
+    apellidos: Optional[str] = None
+    fecha: Optional[str] = None
+    hora: Optional[str] = None
+    tratamiento: Optional[str] = None
+    estado_cita: Optional[str] = None
+    odontologo: Optional[str] = None
+    tel_movil: Optional[str] = None
 
 class AppointmentCreate(BaseModel):
     patient_id: str
