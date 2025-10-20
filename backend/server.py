@@ -458,16 +458,16 @@ async def auto_sync_appointments():
 async def startup_event():
     asyncio.create_task(check_and_send_reminders())
     
-    # Configurar sincronización automática cada 15 minutos
+    # Configurar sincronización automática cada 5 minutos
     scheduler.add_job(
         auto_sync_appointments,
-        trigger=IntervalTrigger(minutes=15),
+        trigger=IntervalTrigger(minutes=5),
         id='sync_appointments_job',
         name='Sincronizar citas desde Google Sheets',
         replace_existing=True
     )
     scheduler.start()
-    print("✅ Scheduler de sincronización automática iniciado (cada 15 minutos)")
+    print("✅ Scheduler de sincronización automática iniciado (cada 5 minutos)")
     
     # Ejecutar una sincronización inmediata al iniciar
     asyncio.create_task(auto_sync_appointments())
