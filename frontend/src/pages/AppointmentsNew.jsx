@@ -166,6 +166,23 @@ const AppointmentsNew = () => {
   const goToNextDay = () => setSelectedDate(addDays(selectedDate, 1));
   const goToToday = () => setSelectedDate(new Date());
 
+  const handleSyncGoogleSheets = async () => {
+    setIsSyncing(true);
+    try {
+      const response = await axios.post(`${API}/appointments/sync-google-sheets`);
+      toast.success(
+        `Sincronización completada: ${response.data.appointments_synced} citas, ${response.data.patients_synced} pacientes nuevos`
+      );
+      fetchAppointments();
+      fetchStats();
+    } catch (error) {
+      console.error('Error syncing:', error);
+      toast.error('Error al sincronizar con Google Sheets');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 p-4">
       {/* Header - Reducido 25% */}
