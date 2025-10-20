@@ -4,7 +4,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
 import Patients from './pages/Patients';
-import Appointments from './pages/Appointments';
+import AppointmentsNew from './pages/AppointmentsNew';
 
 function App() {
   return (
