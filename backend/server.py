@@ -262,6 +262,45 @@ async def delete_appointment(appointment_id: str):
     result = await db.appointments.delete_one({"id": appointment_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Appointment not found")
+
+# Update appointment status
+@api_router.patch("/appointments/{appointment_id}/status")
+async def update_appointment_status(appointment_id: str, status: str):
+    valid_statuses = ["planificada", "confirmada", "cancelada"]
+    if status not in valid_statuses:
+        raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {', '.join(valid_statuses)}")
+    
+    result = await db.appointments.update_one(
+        {"id": appointment_id},
+        {"$set": {"status": status}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    
+    return {"success": True, "status": status}
+
+# Send individual reminder
+@api_router.post("/appointments/{appointment_id}/send-reminder")
+async def send_appointment_reminder(appointment_id: str):
+    appointment = await db.appointments.find_one({"id": appointment_id}, {"_id": 0})
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    
+    apt_date = datetime.fromisoformat(appointment['date']) if isinstance(appointment['date'], str) else appointment['date']
+    message = f"Recordatorio: Tiene una cita '{appointment['title']}' programada para el {apt_date.strftime('%d/%m/%Y a las %H:%M')}."
+    
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(f"{WHATSAPP_SERVICE_URL}/send-message", json={
+                "number": appointment['patient_phone'],
+                "message": message
+            })
+        
+        return {"success": True, "message": "Recordatorio enviado"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al enviar recordatorio: {str(e)}")
+
     return {"success": True}
 
 
