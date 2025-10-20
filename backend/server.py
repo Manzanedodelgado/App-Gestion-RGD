@@ -324,6 +324,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Start reminder background task
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(check_and_send_reminders())
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
