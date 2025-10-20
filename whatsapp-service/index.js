@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const QRCode = require('qrcode');
 const cors = require('cors');
+const { Client, LocalAuth } = require('whatsapp-web.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,18 +23,66 @@ let clientInfo = null;
 let chats = [];
 let messages = {};
 
-// Generate a stable QR code
-async function generateQR() {
-  const qrData = 'whatsapp://connect?code=' + Math.random().toString(36).substring(7);
-  qrCode = await QRCode.toDataURL(qrData);
-  return qrCode;
-}
+// Initialize WhatsApp Client
+const client = new Client({
+  authStrategy: new LocalAuth({
+    dataPath: '/tmp/.wwebjs_auth'
+  }),
+  puppeteer: {
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--disable-gpu'
+    ]
+  }
+});
 
-// Initialize mock data
-async function initializeMockData() {
-  console.log('Initializing WhatsApp service (Mock Mode)...');
-  await generateQR();
+// WhatsApp events
+client.on('qr', async (qr) => {
+  console.log('QR Code received');
+  qrCode = await QRCode.toDataURL(qr);
   io.emit('qr', qrCode);
+});
+
+client.on('ready', () => {
+  console.log('WhatsApp Client is ready!');
+  isReady = true;
+  clientInfo = {
+    pushname: client.info.pushname,
+    wid: client.info.wid._serialized
+  };
+  qrCode = null;
+  io.emit('ready', clientInfo);
+});
+
+client.on('authenticated', () => {
+  console.log('WhatsApp Client authenticated');
+});
+
+client.on('auth_failure', (msg) => {
+  console.error('Authentication failed:', msg);
+});
+
+client.on('disconnected', (reason) => {
+  console.log('WhatsApp Client disconnected:', reason);
+  isReady = false;
+  clientInfo = null;
+  io.emit('disconnected');
+});
+
+// Initialize WhatsApp client
+async function initializeWhatsApp() {
+  console.log('Initializing WhatsApp Client...');
+  try {
+    await client.initialize();
+  } catch (error) {
+    console.error('Error initializing WhatsApp:', error);
+  }
 }
 
 // REST API endpoints
