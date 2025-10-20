@@ -162,8 +162,21 @@ const AppointmentsNew = () => {
   };
 
   const filteredAppointments = appointments.filter((apt) => {
-    const aptDate = new Date(apt.date);
-    return format(aptDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+    // Usar el campo 'fecha' del Google Sheet, no 'date'
+    if (!apt.fecha) return false;
+    
+    // Convertir la fecha del appointment al formato yyyy-MM-dd
+    let aptDateStr = apt.fecha;
+    if (aptDateStr.includes('/')) {
+      // Si viene en formato dd/mm/yyyy, convertir a yyyy-MM-dd
+      const parts = aptDateStr.split('/');
+      if (parts.length === 3) {
+        aptDateStr = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      }
+    }
+    
+    const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
+    return aptDateStr === selectedDateStr;
   });
 
   const goToPreviousDay = () => setSelectedDate(subDays(selectedDate, 1));
