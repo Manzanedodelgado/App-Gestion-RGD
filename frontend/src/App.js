@@ -1,32 +1,30 @@
-import { useState, useEffect } from 'react';
 import '@/App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
+import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
 import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
-import { Toaster } from '@/components/ui/sonner';
 
 function App() {
   return (
-    <div className="App">
-      <Toaster position="top-right" richColors />
-      <BrowserRouter>
-        <div className="flex h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/patients" element={<Patients />} />
-              <Route path="/appointments" element={<Appointments />} />
-            </Routes>
-          </main>
-        </div>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/patients" element={<Patients />} />
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="/templates" element={<div className="p-8"><h1 className="text-3xl font-bold">Plantillas</h1><p className="text-gray-600 mt-2">Próximamente...</p></div>} />
+          <Route path="/consents" element={<div className="p-8"><h1 className="text-3xl font-bold">Consentimientos</h1><p className="text-gray-600 mt-2">Próximamente...</p></div>} />
+          <Route path="/automations" element={<div className="p-8"><h1 className="text-3xl font-bold">Automatizaciones</h1><p className="text-gray-600 mt-2">Próximamente...</p></div>} />
+          <Route path="/users" element={<div className="p-8"><h1 className="text-3xl font-bold">Usuarios</h1><p className="text-gray-600 mt-2">Próximamente...</p></div>} />
+          <Route path="/system" element={<div className="p-8"><h1 className="text-3xl font-bold">Estado del Sistema</h1><p className="text-gray-600 mt-2">Próximamente...</p></div>} />
+          <Route path="/docs" element={<div className="p-8"><h1 className="text-3xl font-bold">Documentación</h1><p className="text-gray-600 mt-2">Próximamente...</p></div>} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
 
