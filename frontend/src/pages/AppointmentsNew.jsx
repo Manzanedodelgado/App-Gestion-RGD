@@ -211,7 +211,7 @@ const AppointmentsNew = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-xs mb-0.5">Total</p>
-              <p className="text-2xl font-bold">{stats.total}</p>
+              <p className="text-2xl font-bold">{stats?.total || 0}</p>
             </div>
             <div className="w-6 h-6 flex items-center justify-center">
               <CalendarIcon size={24} className="opacity-30" />
@@ -223,7 +223,7 @@ const AppointmentsNew = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-xs mb-0.5">Confirmadas</p>
-              <p className="text-2xl font-bold">{stats.confirmadas}</p>
+              <p className="text-2xl font-bold">{stats?.confirmadas || 0}</p>
             </div>
             <div className="w-6 h-6 flex items-center justify-center">
               <Users size={24} className="opacity-30" />
@@ -235,7 +235,7 @@ const AppointmentsNew = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-xs mb-0.5">Canceladas</p>
-              <p className="text-2xl font-bold">{stats.canceladas}</p>
+              <p className="text-2xl font-bold">{stats?.canceladas || 0}</p>
             </div>
             <div className="w-6 h-6 flex items-center justify-center">
               <XCircle size={24} className="opacity-30" />
