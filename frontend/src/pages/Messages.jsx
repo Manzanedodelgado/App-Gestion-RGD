@@ -27,40 +27,51 @@ const Messages = () => {
 
   useEffect(() => {
     checkWhatsAppStatus();
-    const socketConnection = io(SOCKET_URL);
-    setSocket(socketConnection);
+    
+    // Only use socket in development (localhost)
+    if (SOCKET_URL) {
+      const socketConnection = io(SOCKET_URL);
+      setSocket(socketConnection);
 
-    socketConnection.on('qr', (qr) => {
-      setQrCode(qr);
-      setWhatsappStatus({ ready: false, hasQR: true });
-    });
+      socketConnection.on('qr', (qr) => {
+        setQrCode(qr);
+        setWhatsappStatus({ ready: false, hasQR: true });
+      });
 
-    socketConnection.on('ready', () => {
-      setWhatsappStatus({ ready: true, hasQR: false });
-      setQrCode(null);
-      fetchChats();
-      toast.success('WhatsApp conectado exitosamente');
-    });
+      socketConnection.on('ready', () => {
+        setWhatsappStatus({ ready: true, hasQR: false });
+        setQrCode(null);
+        fetchChats();
+        toast.success('WhatsApp conectado exitosamente');
+      });
 
-    socketConnection.on('authenticated', () => {
-      toast.success('Autenticación exitosa');
-    });
+      socketConnection.on('authenticated', () => {
+        toast.success('Autenticación exitosa');
+      });
 
-    socketConnection.on('message', (message) => {
-      if (selectedChat && message.from === selectedChat.id) {
-        setMessages((prev) => [...prev, message]);
-      }
-      fetchChats();
-    });
+      socketConnection.on('message', (message) => {
+        if (selectedChat && message.from === selectedChat.id) {
+          setMessages((prev) => [...prev, message]);
+        }
+        fetchChats();
+      });
 
-    socketConnection.on('disconnected', () => {
-      setWhatsappStatus({ ready: false, hasQR: false });
-      toast.error('WhatsApp desconectado');
-    });
+      socketConnection.on('disconnected', () => {
+        setWhatsappStatus({ ready: false, hasQR: false });
+        toast.error('WhatsApp desconectado');
+      });
 
-    return () => {
-      socketConnection.disconnect();
-    };
+      return () => {
+        socketConnection.disconnect();
+      };
+    } else {
+      // In production, use polling instead of socket
+      const pollInterval = setInterval(() => {
+        checkWhatsAppStatus();
+      }, 3000); // Poll every 3 seconds
+      
+      return () => clearInterval(pollInterval);
+    }
   }, []);
 
   useEffect(() => {
