@@ -550,6 +550,8 @@ const AppointmentsNew = () => {
             </form>
           </DialogContent>
         </Dialog>
+            </>
+          )}
         </div>
       </div>
 
