@@ -412,13 +412,13 @@ const AppointmentsNew = () => {
           filteredAppointments.map((apt) => (
             <div
               key={apt.id}
-              className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-blue-500"
+              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow border-l-3 border-blue-500"
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-bold text-gray-900">{apt.patient_name}</h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-base font-bold text-gray-900">{apt.patient_name}</h3>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
                       apt.status === 'confirmada' ? 'bg-green-100 text-green-800' :
                       apt.status === 'cancelada' ? 'bg-yellow-100 text-yellow-800' :
                       apt.status === 'anulada' ? 'bg-red-100 text-red-800' :
@@ -432,63 +432,63 @@ const AppointmentsNew = () => {
                     </span>
                   </div>
                   
-                  <p className="text-sm text-gray-600 mb-4">{apt.title}</p>
+                  <p className="text-xs text-gray-600 mb-3">{apt.title}</p>
                   
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-700">
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon size={16} />
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-gray-700">
+                    <div className="flex items-center gap-1.5">
+                      <CalendarIcon size={12} />
                       <span>{format(new Date(apt.date), "d 'oct' yyyy", { locale: es })}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={16} />
+                    <div className="flex items-center gap-1.5">
+                      <Clock size={12} />
                       <span>{format(new Date(apt.date), 'HH:mm', { locale: es })}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Users size={16} />
+                    <div className="flex items-center gap-1.5">
+                      <Users size={12} />
                       <span>{apt.doctor || 'Sin asignar'}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <span>📞</span>
                       <span>{apt.patient_phone}</span>
                     </div>
                   </div>
                   
                   {apt.notes && (
-                    <div className="mt-3 text-xs rounded p-2 bg-gray-50 text-gray-600">
+                    <div className="mt-2 text-[10px] rounded p-1.5 bg-gray-50 text-gray-600">
                       <span className="font-medium">Nota:</span> {apt.notes}
                     </div>
                   )}
                 </div>
                 
-                <div className="flex items-center gap-2 ml-4">
+                <div className="flex items-center gap-1.5 ml-3">
                   {apt.status === 'planificada' && (
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => handleStatusChange(apt.id, 'confirmada')}
-                      className="h-10 w-10 hover:bg-green-50 text-green-600 border border-green-500 rounded-lg"
+                      className="h-8 w-8 hover:bg-green-50 text-green-600 border border-green-500 rounded-lg"
                       title="Confirmar cita"
                     >
-                      <Check size={20} />
+                      <Check size={16} />
                     </Button>
                   )}
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleSendReminder(apt.id)}
-                    className="h-10 w-10 hover:bg-gray-50 text-gray-700 rounded-lg"
+                    className="h-8 w-8 hover:bg-gray-50 text-gray-700 rounded-lg"
                     title="Enviar recordatorio"
                   >
-                    <Send size={20} />
+                    <Send size={16} />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(apt)}
-                    className="h-10 w-10 hover:bg-gray-50 text-gray-700 rounded-lg"
+                    className="h-8 w-8 hover:bg-gray-50 text-gray-700 rounded-lg"
                     title="Más opciones"
                   >
-                    <MoreVertical size={20} />
+                    <MoreVertical size={16} />
                   </Button>
                 </div>
               </div>
