@@ -226,7 +226,7 @@ async def create_appointment(appointment: AppointmentCreate):
 
 @api_router.get("/appointments", response_model=List[Appointment])
 async def get_appointments():
-    appointments = await db.appointments.find({}, {"_id": 0}).to_list(1000)
+    appointments = await db.appointments.find({}, {"_id": 0}).to_list(None)  # Devolver TODAS las citas
     for apt in appointments:
         if isinstance(apt['date'], str):
             apt['date'] = datetime.fromisoformat(apt['date'])
