@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import ContactFilters from './ContactFilters';
+import BulkCsvSender from './BulkCsvSender';
 import { AnimatePresence } from 'framer-motion';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -17,6 +18,7 @@ const Patients = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({ status: 'todos' });
   const [showForm, setShowForm] = useState(false);
+  const [showBulkCsv, setShowBulkCsv] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
   const [parentContact, setParentContact] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -130,6 +132,7 @@ const Patients = () => {
 
               <Button 
                 variant="outline"
+                onClick={() => setShowBulkCsv(true)}
                 className="bg-white/10 text-white border-white/20 hover:bg-white/20 h-9 text-sm"
               >
                 <UploadCloud className="w-4 h-4 mr-2" />
@@ -224,6 +227,11 @@ const Patients = () => {
             />
           )}
         </AnimatePresence>
+
+        {/* Bulk CSV Sender Modal */}
+        {showBulkCsv && (
+          <BulkCsvSender onClose={() => setShowBulkCsv(false)} />
+        )}
 
         {/* Patients List */}
         <ContactList
