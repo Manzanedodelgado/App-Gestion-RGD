@@ -356,6 +356,46 @@ const AppointmentsNew = () => {
         </div>
       </div>
 
+      {/* Confirmation Mode Controls */}
+      {isConfirmationMode && (
+        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedAppointments.length === filteredAppointments.length && filteredAppointments.length > 0}
+                  onChange={handleSelectAll}
+                  className="w-4 h-4 text-blue-600 rounded"
+                />
+                Seleccionar todo ({selectedAppointments.length} seleccionadas)
+              </label>
+              
+              <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                <SelectTrigger className="w-64 h-8 text-xs">
+                  <SelectValue placeholder="Plantilla" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recordatorio_cita">Recordatorio de Cita</SelectItem>
+                  <SelectItem value="confirmacion_cita">Confirmación de Cita</SelectItem>
+                  <SelectItem value="cancelacion_cita">Cancelación de Cita</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <Button
+              onClick={handleSendConfirmations}
+              disabled={selectedAppointments.length === 0}
+              className="h-8 text-white text-xs font-bold rounded-lg border-0"
+              style={{ background: 'linear-gradient(to right, #0071BC, #65C8D0)' }}
+            >
+              <Send size={14} className="mr-1.5" />
+              Enviar ({selectedAppointments.length})
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons - Reducido 25% */}
       <div className="mb-3 flex justify-between items-center">
         <div className="text-xs text-gray-600">
@@ -367,25 +407,27 @@ const AppointmentsNew = () => {
         </div>
         
         <div className="flex gap-2">
-          <Button 
-            onClick={handleSyncGoogleSheets}
-            disabled={isSyncing}
-            className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#0071BC] hover:bg-[#2E3192]"
-          >
-            <RefreshCw size={14} className={`mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            {isSyncing ? 'Sincronizando...' : 'Sincronizar Ahora'}
-          </Button>
-          
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (!open) resetForm();
-          }}>
-            <DialogTrigger asChild>
-              <Button className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#65C8D0] hover:bg-[#9EEDFC]">
-                <Plus size={14} className="mr-1.5" />
-                Nueva Cita
+          {!isConfirmationMode && (
+            <>
+              <Button 
+                onClick={handleSyncGoogleSheets}
+                disabled={isSyncing}
+                className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#0071BC] hover:bg-[#2E3192]"
+              >
+                <RefreshCw size={14} className={`mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                {isSyncing ? 'Sincronizando...' : 'Sincronizar Ahora'}
               </Button>
-            </DialogTrigger>
+              
+              <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                setIsDialogOpen(open);
+                if (!open) resetForm();
+              }}>
+                <DialogTrigger asChild>
+                  <Button className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#65C8D0] hover:bg-[#9EEDFC]">
+                    <Plus size={14} className="mr-1.5" />
+                    Nueva Cita
+                  </Button>
+                </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>{editingAppointment ? 'Editar Cita' : 'Nueva Cita'}</DialogTitle>
