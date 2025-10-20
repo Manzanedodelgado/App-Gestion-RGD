@@ -228,10 +228,10 @@ async def sync_appointments():
                 
                 await db.appointments.insert_one(appointment_doc)
                 appointments_synced += 1
-                print(f"✓ Cita creada: {nombre} - {fecha} {hora}")
+                print(f"✓ Cita creada: {nombre} - {apt_data['fecha']} {apt_data['hora']}")
                 
             except Exception as e:
-                print(f"Error procesando fila {row_idx}: {str(e)}")
+                print(f"Error procesando cita de {nombre}: {str(e)}")
                 continue
         
         print(f"\n✅ Sincronización completada:")
