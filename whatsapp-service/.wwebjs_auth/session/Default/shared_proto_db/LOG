@@ -1,2 +1,2 @@
-2025/10/20-01:05:58.830 1097 Creating DB /app/whatsapp-service/.wwebjs_auth/session/Default/shared_proto_db since it was missing.
-2025/10/20-01:05:58.890 1097 Reusing MANIFEST /app/whatsapp-service/.wwebjs_auth/session/Default/shared_proto_db/MANIFEST-000001
+2025/10/20-01:09:44.828 12db Creating DB /app/whatsapp-service/.wwebjs_auth/session/Default/shared_proto_db since it was missing.
+2025/10/20-01:09:44.846 12db Reusing MANIFEST /app/whatsapp-service/.wwebjs_auth/session/Default/shared_proto_db/MANIFEST-000001
