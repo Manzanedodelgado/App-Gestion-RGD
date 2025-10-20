@@ -108,6 +108,9 @@ async def sync_appointments():
         appointments_synced = 0
         patients_synced = 0
         
+        # Primero recolectar todas las citas válidas con sus fechas para ordenar
+        pending_appointments = []
+        
         for row_idx, row in enumerate(values[1:], start=2):
             try:
                 # Saltar filas vacías
