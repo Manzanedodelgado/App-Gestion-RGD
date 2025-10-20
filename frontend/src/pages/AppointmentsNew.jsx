@@ -571,7 +571,17 @@ const AppointmentsNew = () => {
                                  apt.estado_cita === 'anulada' ? '#F59E0B' : '#0000FF'
               }}
             >
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex items-start gap-3 mb-3">
+                {isConfirmationMode && (
+                  <input
+                    type="checkbox"
+                    checked={selectedAppointments.includes(apt.id)}
+                    onChange={() => handleSelectAppointment(apt.id)}
+                    className="w-5 h-5 text-blue-600 rounded mt-1"
+                  />
+                )}
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
                   <h3 className="text-base font-bold text-gray-900">{apt.nombre} {apt.apellidos}</h3>
                   <p className="text-sm text-gray-600 mt-1">{apt.tratamiento || apt.title}</p>
