@@ -308,9 +308,17 @@ async def send_appointment_reminder(appointment_id: str):
 # Get appointment statistics
 @api_router.get("/appointments/stats/summary")
 async def get_appointment_stats():
-    all_appointments = await db.appointments.find({}, {"_id": 0}).to_list(1000)
+    all_appointments = await db.appointments.find({}, {"_id": 0}).to_list(10000)
     
     total = len(all_appointments)
+    confirmadas = sum(1 for apt in all_appointments if apt.get('status') == 'confirmada')
+    canceladas = sum(1 for apt in all_appointments if apt.get('status') == 'cancelada')
+    
+    return {
+        "total": total,
+        "confirmadas": confirmadas,
+        "canceladas": canceladas
+    }
 
 # Google Sheets Sync
 @api_router.post("/appointments/sync-google-sheets")
