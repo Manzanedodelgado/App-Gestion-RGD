@@ -185,7 +185,7 @@ const AppointmentsNew = () => {
 
       {/* Statistics Cards - Reducidas 50% */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 space-y-0">
-        <div className="rounded-lg p-3 text-white shadow-lg bg-gradient-to-br from-[#30366A] to-[#5860B3]">
+        <div className="rounded-lg p-3 text-white shadow-lg bg-gradient-to-br from-[#0071BC] to-[#65C8D0]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-xs mb-0.5">Total</p>
@@ -197,7 +197,7 @@ const AppointmentsNew = () => {
           </div>
         </div>
         
-        <div className="rounded-lg p-3 text-white shadow-lg bg-gradient-to-br from-[#5860B3] to-[#7280DA]">
+        <div className="rounded-lg p-3 text-white shadow-lg bg-gradient-to-br from-[#0000FF] to-[#0071BC]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-xs mb-0.5">Confirmadas</p>
@@ -209,7 +209,7 @@ const AppointmentsNew = () => {
           </div>
         </div>
         
-        <div className="rounded-lg p-3 text-white shadow-lg bg-gradient-to-br from-[#FBBF24] to-[#FDE68A]">
+        <div className="rounded-lg p-3 text-white shadow-lg bg-gradient-to-br from-[#FBBF24] to-[#F59E0B]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-xs mb-0.5">Canceladas</p>
@@ -223,7 +223,7 @@ const AppointmentsNew = () => {
       </div>
 
       {/* Date Navigation - Reducido 25% */}
-      <div className="rounded-lg shadow-md p-4 mt-4 mb-4 bg-gradient-to-br from-[#7280DA] to-[#8E9AF2]">
+      <div className="rounded-lg shadow-md p-4 mt-4 mb-4 bg-gradient-to-br from-[#0071BC] to-[#65C8D0]">
         <div className="flex items-center gap-1.5 mb-3">
           <CalendarIcon className="text-white" size={18} />
           <h2 className="text-base font-bold text-white">Navegación de Fechas</h2>
