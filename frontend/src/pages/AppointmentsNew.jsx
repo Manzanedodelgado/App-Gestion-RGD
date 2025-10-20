@@ -23,6 +23,7 @@ const AppointmentsNew = () => {
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [lastSyncTime, setLastSyncTime] = useState(null);
   const [formData, setFormData] = useState({
     patient_id: '',
     title: '',
