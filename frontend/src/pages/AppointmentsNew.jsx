@@ -283,8 +283,17 @@ const AppointmentsNew = () => {
         </div>
       </div>
 
-      {/* New Appointment Button - Reducido 25% */}
-      <div className="mb-3 flex justify-end">
+      {/* Action Buttons - Reducido 25% */}
+      <div className="mb-3 flex justify-end gap-2">
+        <Button 
+          onClick={handleSyncGoogleSheets}
+          disabled={isSyncing}
+          className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#0071BC] hover:bg-[#2E3192]"
+        >
+          <RefreshCw size={14} className={`mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
+          {isSyncing ? 'Sincronizando...' : 'Sincronizar Google Sheets'}
+        </Button>
+        
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           setIsDialogOpen(open);
           if (!open) resetForm();
