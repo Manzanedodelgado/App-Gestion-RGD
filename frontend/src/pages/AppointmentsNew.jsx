@@ -42,6 +42,23 @@ const AppointmentsNew = () => {
     fetchStats();
   }, [selectedDate]);
 
+  // Sincronizar al cargar la página por primera vez
+  useEffect(() => {
+    const syncOnLoad = async () => {
+      try {
+        console.log('🔄 Sincronizando citas al cargar la página...');
+        await axios.post(`${API}/appointments/sync-google-sheets`);
+        console.log('✅ Sincronización inicial completada');
+        fetchAppointments();
+        fetchStats();
+      } catch (error) {
+        console.error('Error en sincronización inicial:', error);
+      }
+    };
+    
+    syncOnLoad();
+  }, []); // Solo se ejecuta una vez al montar el componente
+
   const fetchAppointments = async () => {
     try {
       const response = await axios.get(`${API}/appointments`);
