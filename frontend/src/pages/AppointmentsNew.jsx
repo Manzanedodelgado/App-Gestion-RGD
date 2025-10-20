@@ -321,17 +321,17 @@ const AppointmentsNew = () => {
             <RefreshCw size={14} className={`mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
             {isSyncing ? 'Sincronizando...' : 'Sincronizar Ahora'}
           </Button>
-        
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) resetForm();
-        }}>
-          <DialogTrigger asChild>
-            <Button className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#65C8D0] hover:bg-[#9EEDFC]">
-              <Plus size={14} className="mr-1.5" />
-              Nueva Cita
-            </Button>
-          </DialogTrigger>
+          
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) resetForm();
+          }}>
+            <DialogTrigger asChild>
+              <Button className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#65C8D0] hover:bg-[#9EEDFC]">
+                <Plus size={14} className="mr-1.5" />
+                Nueva Cita
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>{editingAppointment ? 'Editar Cita' : 'Nueva Cita'}</DialogTitle>
