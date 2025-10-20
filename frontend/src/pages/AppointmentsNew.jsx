@@ -504,11 +504,11 @@ const AppointmentsNew = () => {
 
               {(apt.notas || apt.notes) && (
                 <div className="mt-3 text-sm rounded-lg p-3 border-l-4" style={{ 
-                  backgroundColor: '#FEF3C7',
-                  borderLeftColor: '#FBBF24',
-                  color: '#78350F'
+                  backgroundColor: '#F3F4F6',
+                  borderLeftColor: '#FCD34D',
+                  color: '#4B5563'
                 }}>
-                  <span className="font-bold">Nota:</span> {apt.notas || apt.notes}
+                  <span className="font-bold" style={{ color: '#F59E0B' }}>📝 Nota:</span> {apt.notas || apt.notes}
                 </div>
               )}
 
