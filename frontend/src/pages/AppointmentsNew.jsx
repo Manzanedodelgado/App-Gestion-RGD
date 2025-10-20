@@ -66,6 +66,9 @@ const AppointmentsNew = () => {
       setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
+      setStats({ total: 0, confirmadas: 0, canceladas: 0 });
+    } finally {
+      setIsLoading(false);
     }
   };
 
