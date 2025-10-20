@@ -178,6 +178,18 @@ backend:
         comment: "Creado endpoint GET /appointments/stats/summary que retorna total, confirmadas y canceladas"
 
 frontend:
+  - task: "Página de WhatsApp con QR Code"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Messages.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "QR code de WhatsApp mostrándose correctamente. Implementado polling para actualizaciones en producción. Socket funcional en desarrollo"
+  
   - task: "Nueva página de Citas con diseño personalizado"
     implemented: true
     working: true
