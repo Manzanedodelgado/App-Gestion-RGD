@@ -251,7 +251,7 @@ async def sync_appointments():
                 print(f"Error procesando cita de {nombre}: {str(e)}")
                 continue
         
-        print(f"\n✅ Sincronización completada:")
+        print("\n✅ Sincronización completada:")
         print(f"   - Pacientes nuevos: {patients_synced}")
         print(f"   - Citas sincronizadas: {appointments_synced}")
         
