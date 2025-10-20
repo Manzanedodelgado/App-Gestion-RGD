@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
+import ContactFilters from './ContactFilters';
 import { AnimatePresence } from 'framer-motion';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -14,6 +15,7 @@ const API = `${BACKEND_URL}/api`;
 const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState({ status: 'todos' });
   const [showForm, setShowForm] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
   const [parentContact, setParentContact] = useState(null);
@@ -86,10 +88,24 @@ const Patients = () => {
     setParentContact(null);
   };
 
-  const filteredPatients = patients.filter((patient) =>
-    patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    patient.phone.includes(searchQuery)
-  );
+  const filteredPatients = (() => {
+    let result = patients;
+
+    // Filtro de búsqueda
+    if (searchQuery.trim()) {
+      result = result.filter((patient) =>
+        patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.phone.includes(searchQuery)
+      );
+    }
+
+    // Filtro de estado
+    if (filters.status !== 'todos') {
+      result = result.filter(patient => patient.status === filters.status);
+    }
+
+    return result;
+  })();
 
   const activePatients = patients.filter(p => p.email || p.phone).length;
 
@@ -176,25 +192,24 @@ const Patients = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Search and Filters */}
         <div className="bg-white rounded-2xl shadow-lg p-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Buscar por nombre, teléfono o número de paciente..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 border-gray-200 text-base rounded-lg focus:ring-[#0071bc] focus:border-[#0071bc]"
-              data-testid="search-patients-input"
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Buscar por nombre, teléfono o número de paciente..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-12 border-gray-200 text-base rounded-lg focus:ring-[#0071bc] focus:border-[#0071bc]"
+                data-testid="search-patients-input"
+              />
+            </div>
+            <ContactFilters 
+              filters={filters}
+              setFilters={setFilters}
             />
-            <Button 
-              variant="ghost"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600 hover:text-[#0071bc]"
-            >
-              <Users className="w-5 h-5 mr-2" />
-              Todos los...
-            </Button>
           </div>
         </div>
 
