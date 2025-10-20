@@ -168,7 +168,7 @@ const AppointmentsNew = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
       {/* Header */}
-      <div className="rounded-2xl shadow-lg p-6 mb-6" style={{ background: 'linear-gradient(to right, #2D3E8A, #4C67D0)' }}>
+      <div className="rounded-2xl shadow-lg p-6 mb-6" style={{ background: 'linear-gradient(to right, #0055DD, #0077FF)' }}>
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white mb-1">Agenda de Citas</h1>
@@ -177,7 +177,7 @@ const AppointmentsNew = () => {
           <div className="flex items-center gap-3">
             <span className="text-white text-sm">Modo Agenda</span>
             <div className="bg-white rounded-full p-1">
-              <div className="w-12 h-6 rounded-full" style={{ background: '#007BFF' }}></div>
+              <div className="w-12 h-6 rounded-full" style={{ background: '#0000CC' }}></div>
             </div>
           </div>
         </div>
