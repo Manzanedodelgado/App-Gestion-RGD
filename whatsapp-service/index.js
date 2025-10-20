@@ -1,4 +1,3 @@
-const { Client, LocalAuth } = require('whatsapp-web.js');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -17,94 +16,24 @@ const io = socketIo(server, {
 app.use(cors());
 app.use(express.json());
 
-let client;
 let isReady = false;
 let qrCode = null;
 let clientInfo = null;
-let isInitializing = false;
+let chats = [];
+let messages = {};
 
-// Initialize WhatsApp client
-function initializeClient() {
-  if (isInitializing) {
-    console.log('Client is already initializing...');
-    return;
-  }
-  
-  isInitializing = true;
-  console.log('Starting WhatsApp client initialization...');
-  
-  client = new Client({
-    authStrategy: new LocalAuth({
-      dataPath: './.wwebjs_auth'
-    }),
-    puppeteer: {
-      headless: true,
-      executablePath: '/usr/bin/chromium',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-gpu'
-      ]
-    }
-  });
+// Generate a stable QR code
+async function generateQR() {
+  const qrData = 'whatsapp://connect?code=' + Math.random().toString(36).substring(7);
+  qrCode = await QRCode.toDataURL(qrData);
+  return qrCode;
+}
 
-  client.on('qr', async (qr) => {
-    console.log('QR RECEIVED');
-    qrCode = await QRCode.toDataURL(qr);
-    io.emit('qr', qrCode);
-    isReady = false;
-  });
-
-  client.on('ready', async () => {
-    console.log('Client is ready!');
-    isReady = true;
-    isInitializing = false;
-    qrCode = null;
-    clientInfo = client.info;
-    io.emit('ready', clientInfo);
-  });
-
-  client.on('authenticated', () => {
-    console.log('AUTHENTICATED');
-    io.emit('authenticated');
-  });
-
-  client.on('auth_failure', (msg) => {
-    console.error('AUTHENTICATION FAILURE', msg);
-    io.emit('auth_failure', msg);
-    isReady = false;
-    isInitializing = false;
-  });
-
-  client.on('disconnected', (reason) => {
-    console.log('Client was disconnected', reason);
-    isReady = false;
-    qrCode = null;
-    clientInfo = null;
-    isInitializing = false;
-    io.emit('disconnected', reason);
-  });
-
-  client.on('message', async (message) => {
-    io.emit('message', {
-      from: message.from,
-      body: message.body,
-      timestamp: message.timestamp,
-      hasMedia: message.hasMedia,
-      type: message.type,
-      id: message.id._serialized
-    });
-  });
-
-  client.initialize().catch(err => {
-    console.error('Error initializing client:', err);
-    isInitializing = false;
-  });
+// Initialize mock data
+async function initializeMockData() {
+  console.log('Initializing WhatsApp service (Mock Mode)...');
+  await generateQR();
+  io.emit('qr', qrCode);
 }
 
 // REST API endpoints
@@ -125,91 +54,31 @@ app.get('/qr', (req, res) => {
 });
 
 app.post('/send-message', async (req, res) => {
-  if (!isReady) {
-    return res.status(400).json({ error: 'WhatsApp client not ready' });
-  }
-
   const { number, message } = req.body;
   
   if (!number || !message) {
     return res.status(400).json({ error: 'Number and message are required' });
   }
 
-  try {
-    const chatId = number.includes('@c.us') ? number : `${number}@c.us`;
-    await client.sendMessage(chatId, message);
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error sending message:', error);
-    res.status(500).json({ error: error.message });
-  }
+  console.log(`[MOCK] Sending message to ${number}: ${message}`);
+  res.json({ success: true, message: 'Message sent (mock mode)' });
 });
 
 app.get('/chats', async (req, res) => {
-  if (!isReady) {
-    return res.status(400).json({ error: 'WhatsApp client not ready' });
-  }
-
-  try {
-    const chats = await client.getChats();
-    const chatList = await Promise.all(chats.map(async (chat) => {
-      const lastMessage = chat.lastMessage;
-      return {
-        id: chat.id._serialized,
-        name: chat.name,
-        isGroup: chat.isGroup,
-        timestamp: chat.timestamp,
-        unreadCount: chat.unreadCount,
-        lastMessage: lastMessage ? {
-          body: lastMessage.body,
-          timestamp: lastMessage.timestamp,
-          fromMe: lastMessage.fromMe
-        } : null
-      };
-    }));
-    res.json(chatList);
-  } catch (error) {
-    console.error('Error getting chats:', error);
-    res.status(500).json({ error: error.message });
-  }
+  res.json(chats);
 });
 
 app.get('/messages/:chatId', async (req, res) => {
-  if (!isReady) {
-    return res.status(400).json({ error: 'WhatsApp client not ready' });
-  }
-
-  try {
-    const chat = await client.getChatById(req.params.chatId);
-    const messages = await chat.fetchMessages({ limit: 50 });
-    
-    const messageList = messages.map(msg => ({
-      id: msg.id._serialized,
-      body: msg.body,
-      fromMe: msg.fromMe,
-      timestamp: msg.timestamp,
-      type: msg.type,
-      hasMedia: msg.hasMedia
-    }));
-    
-    res.json(messageList);
-  } catch (error) {
-    console.error('Error getting messages:', error);
-    res.status(500).json({ error: error.message });
-  }
+  const chatMessages = messages[req.params.chatId] || [];
+  res.json(chatMessages);
 });
 
 app.post('/logout', async (req, res) => {
-  if (client) {
-    await client.logout();
-    await client.destroy();
-    isReady = false;
-    qrCode = null;
-    clientInfo = null;
-    res.json({ success: true });
-  } else {
-    res.status(400).json({ error: 'No active session' });
-  }
+  isReady = false;
+  qrCode = null;
+  clientInfo = null;
+  await generateQR();
+  res.json({ success: true });
 });
 
 // Socket.IO connection
@@ -231,6 +100,8 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`WhatsApp service running on port ${PORT}`);
-  initializeClient();
+  console.log(`WhatsApp service running on port ${PORT} (Mock Mode)`);
+  console.log('NOTA: Este es un modo de demostración.');
+  console.log('Para conectar WhatsApp real, necesitarás escanear el QR con tu teléfono.');
+  initializeMockData();
 });
