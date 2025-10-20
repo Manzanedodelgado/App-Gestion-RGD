@@ -24,6 +24,9 @@ const AppointmentsNew = () => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lastSyncTime, setLastSyncTime] = useState(null);
+  const [isConfirmationMode, setIsConfirmationMode] = useState(false);
+  const [selectedAppointments, setSelectedAppointments] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState('recordatorio_cita');
   const [formData, setFormData] = useState({
     patient_id: '',
     title: '',
