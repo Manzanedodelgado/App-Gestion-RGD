@@ -224,17 +224,32 @@ async def sync_appointments():
                 else:
                     patient_id = patient['id']
                 
-                # Crear cita
+                # Separar nombre y apellidos
+                nombre_parts = nombre.split(' ', 1)
+                nombre_solo = nombre_parts[0] if len(nombre_parts) > 0 else nombre
+                apellidos_solo = nombre_parts[1] if len(nombre_parts) > 1 else ''
+                
+                # Crear cita con los campos que espera el frontend
                 appointment_doc = {
                     "id": str(uuid.uuid4()),
-                    "registro": registro,
+                    "registro": registro,  # ID único del registro de Google Sheets
                     "patient_id": patient_id,
-                    "patient_name": nombre,
+                    "patient_name": nombre,  # Mantener para compatibilidad
                     "patient_phone": telefono,
+                    # Campos que espera el frontend
+                    "nombre": nombre_solo,
+                    "apellidos": apellidos_solo,
+                    "fecha": apt_data['fecha'],  # Fecha original del Google Sheet
+                    "hora": apt_data['hora'],    # Hora original del Google Sheet
+                    "tratamiento": tratamiento or "Consulta",
+                    "estado_cita": estado_cita.lower() if estado_cita else "planificada",
+                    "odontologo": doctor or "Dra. Virginia Tresgallo",
+                    "notas": notas,
+                    "tel_movil": telefono,
+                    # Campos adicionales para compatibilidad con backend
                     "title": tratamiento or "Consulta",
                     "date": appointment_datetime.isoformat(),
                     "duration_minutes": 30,
-                    "notes": notas,
                     "status": estado_cita.lower() if estado_cita else "planificada",
                     "doctor": doctor or "Dra. Virginia Tresgallo",
                     "reminder_enabled": True,
