@@ -303,15 +303,24 @@ const AppointmentsNew = () => {
       </div>
 
       {/* Action Buttons - Reducido 25% */}
-      <div className="mb-3 flex justify-end gap-2">
-        <Button 
-          onClick={handleSyncGoogleSheets}
-          disabled={isSyncing}
-          className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#0071BC] hover:bg-[#2E3192]"
-        >
-          <RefreshCw size={14} className={`mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
-          {isSyncing ? 'Sincronizando...' : 'Sincronizar Google Sheets'}
-        </Button>
+      <div className="mb-3 flex justify-between items-center">
+        <div className="text-xs text-gray-600">
+          {lastSyncTime ? (
+            <span>Última sincronización: {format(lastSyncTime, "HH:mm:ss")}</span>
+          ) : (
+            <span>Sincronización automática cada 15 minutos</span>
+          )}
+        </div>
+        
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleSyncGoogleSheets}
+            disabled={isSyncing}
+            className="h-8 text-white text-xs rounded-full px-4 border-0 bg-[#0071BC] hover:bg-[#2E3192]"
+          >
+            <RefreshCw size={14} className={`mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
+            {isSyncing ? 'Sincronizando...' : 'Sincronizar Ahora'}
+          </Button>
         
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           setIsDialogOpen(open);
