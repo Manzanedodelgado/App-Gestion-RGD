@@ -412,40 +412,39 @@ const AppointmentsNew = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-bold text-slate-800">{apt.patient_name}</h3>
-                    <span className={`px-4 py-1 rounded-full text-sm font-medium ${
+                    <h3 className="text-lg font-bold" style={{ color: '#212529' }}>{apt.patient_name}</h3>
+                    <span className={`px-4 py-1 rounded-full text-xs font-bold ${
                       apt.status === 'confirmada' ? 'bg-green-100 text-green-700' :
-                      apt.status === 'cancelada' ? 'bg-red-100 text-red-700' :
-                      'bg-blue-100 text-blue-700'
-                    }`}>
+                      apt.status === 'cancelada' ? 'bg-red-100 text-red-700' : ''
+                    }`} style={apt.status === 'planificada' ? { background: '#A0D4E5', color: '#004085' } : {}}>
                       {apt.status === 'confirmada' ? 'Confirmada' :
                        apt.status === 'cancelada' ? 'Cancelada' : 'Planificada'}
                     </span>
                   </div>
                   
-                  <p className="text-slate-600 mb-4">{apt.title}</p>
+                  <p className="text-sm mb-4" style={{ color: '#6C757D' }}>{apt.title}</p>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2" style={{ color: '#333333' }}>
                       <CalendarIcon size={16} />
                       <span>{format(new Date(apt.date), "d 'oct' yyyy", { locale: es })}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2" style={{ color: '#333333' }}>
                       <Clock size={16} />
                       <span>{format(new Date(apt.date), 'HH:mm', { locale: es })}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2" style={{ color: '#333333' }}>
                       <Users size={16} />
                       <span>{apt.doctor || 'Sin asignar'}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600">
+                    <div className="flex items-center gap-2" style={{ color: '#333333' }}>
                       <span>📞</span>
                       <span>{apt.patient_phone}</span>
                     </div>
                   </div>
                   
                   {apt.notes && (
-                    <div className="mt-3 text-sm text-slate-600 bg-slate-50 rounded p-2">
+                    <div className="mt-3 text-xs rounded p-2" style={{ background: '#F5F5F5', color: '#868E96' }}>
                       <span className="font-medium">Nota:</span> {apt.notes}
                     </div>
                   )}
@@ -457,7 +456,8 @@ const AppointmentsNew = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleStatusChange(apt.id, 'confirmada')}
-                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                      className="hover:bg-green-50"
+                      style={{ color: '#28A745' }}
                       title="Confirmar cita"
                     >
                       <Check size={20} />
@@ -467,7 +467,8 @@ const AppointmentsNew = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleSendReminder(apt.id)}
-                    className="text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
+                    className="hover:bg-gray-50"
+                    style={{ color: '#333333' }}
                     title="Enviar recordatorio"
                   >
                     <Send size={20} />
@@ -476,7 +477,8 @@ const AppointmentsNew = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(apt)}
-                    className="text-slate-600 hover:text-slate-700 hover:bg-slate-50"
+                    className="hover:bg-gray-50"
+                    style={{ color: '#333333' }}
                     title="Más opciones"
                   >
                     <MoreVertical size={20} />
