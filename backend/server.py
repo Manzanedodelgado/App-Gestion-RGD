@@ -434,10 +434,45 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Start reminder background task
+# Scheduler para sincronización automática
+scheduler = AsyncIOScheduler()
+
+async def auto_sync_appointments():
+    """Función que se ejecuta automáticamente para sincronizar citas"""
+    try:
+        print("🔄 Iniciando sincronización automática de citas...")
+        import sys
+        sys.path.insert(0, str(ROOT_DIR))
+        from sync_google_sheets import sync_appointments
+        
+        result = await sync_appointments()
+        
+        if result.get('success'):
+            print(f"✅ Sincronización automática completada: {result.get('appointments_synced', 0)} citas, {result.get('patients_synced', 0)} pacientes")
+        else:
+            print(f"❌ Error en sincronización automática: {result.get('error', 'Error desconocido')}")
+    except Exception as e:
+        print(f"❌ Excepción en sincronización automática: {str(e)}")
+
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(check_and_send_reminders())
+    
+    # Configurar sincronización automática cada 15 minutos
+    scheduler.add_job(
+        auto_sync_appointments,
+        trigger=IntervalTrigger(minutes=15),
+        id='sync_appointments_job',
+        name='Sincronizar citas desde Google Sheets',
+        replace_existing=True
+    )
+    scheduler.start()
+    print("✅ Scheduler de sincronización automática iniciado (cada 15 minutos)")
+    
+    # Ejecutar una sincronización inmediata al iniciar
+    asyncio.create_task(auto_sync_appointments())
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    scheduler.shutdown()
     client.close()
