@@ -109,25 +109,77 @@ app.post('/send-message', async (req, res) => {
     return res.status(400).json({ error: 'Number and message are required' });
   }
 
-  console.log(`[MOCK] Sending message to ${number}: ${message}`);
-  res.json({ success: true, message: 'Message sent (mock mode)' });
+  if (!isReady) {
+    return res.status(503).json({ error: 'WhatsApp client not ready' });
+  }
+
+  try {
+    // Format number properly (add @c.us if not present)
+    const chatId = number.includes('@') ? number : `${number}@c.us`;
+    await client.sendMessage(chatId, message);
+    console.log(`✅ Message sent to ${number}`);
+    res.json({ success: true, message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: 'Failed to send message', details: error.message });
+  }
 });
 
 app.get('/chats', async (req, res) => {
-  res.json(chats);
+  if (!isReady) {
+    return res.status(503).json({ error: 'WhatsApp client not ready' });
+  }
+
+  try {
+    const allChats = await client.getChats();
+    chats = allChats.map(chat => ({
+      id: chat.id._serialized,
+      name: chat.name,
+      isGroup: chat.isGroup,
+      unreadCount: chat.unreadCount,
+      timestamp: chat.timestamp
+    }));
+    res.json(chats);
+  } catch (error) {
+    console.error('Error getting chats:', error);
+    res.status(500).json({ error: 'Failed to get chats' });
+  }
 });
 
 app.get('/messages/:chatId', async (req, res) => {
-  const chatMessages = messages[req.params.chatId] || [];
-  res.json(chatMessages);
+  if (!isReady) {
+    return res.status(503).json({ error: 'WhatsApp client not ready' });
+  }
+
+  try {
+    const chat = await client.getChatById(req.params.chatId);
+    const chatMessages = await chat.fetchMessages({ limit: 50 });
+    const formattedMessages = chatMessages.map(msg => ({
+      id: msg.id._serialized,
+      body: msg.body,
+      from: msg.from,
+      to: msg.to,
+      timestamp: msg.timestamp,
+      fromMe: msg.fromMe
+    }));
+    res.json(formattedMessages);
+  } catch (error) {
+    console.error('Error getting messages:', error);
+    res.status(500).json({ error: 'Failed to get messages' });
+  }
 });
 
 app.post('/logout', async (req, res) => {
-  isReady = false;
-  qrCode = null;
-  clientInfo = null;
-  await generateQR();
-  res.json({ success: true });
+  try {
+    await client.logout();
+    isReady = false;
+    qrCode = null;
+    clientInfo = null;
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error logging out:', error);
+    res.status(500).json({ error: 'Failed to logout' });
+  }
 });
 
 // Socket.IO connection
