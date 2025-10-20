@@ -63,6 +63,7 @@ function initializeClient() {
   client.on('ready', async () => {
     console.log('Client is ready!');
     isReady = true;
+    isInitializing = false;
     qrCode = null;
     clientInfo = client.info;
     io.emit('ready', clientInfo);
@@ -77,6 +78,7 @@ function initializeClient() {
     console.error('AUTHENTICATION FAILURE', msg);
     io.emit('auth_failure', msg);
     isReady = false;
+    isInitializing = false;
   });
 
   client.on('disconnected', (reason) => {
@@ -84,6 +86,7 @@ function initializeClient() {
     isReady = false;
     qrCode = null;
     clientInfo = null;
+    isInitializing = false;
     io.emit('disconnected', reason);
   });
 
@@ -98,7 +101,10 @@ function initializeClient() {
     });
   });
 
-  client.initialize();
+  client.initialize().catch(err => {
+    console.error('Error initializing client:', err);
+    isInitializing = false;
+  });
 }
 
 // REST API endpoints
