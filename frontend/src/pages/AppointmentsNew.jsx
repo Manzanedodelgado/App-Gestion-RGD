@@ -404,9 +404,9 @@ const AppointmentsNew = () => {
       {/* Appointments List */}
       <div className="space-y-4">
         {filteredAppointments.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <CalendarIcon size={64} className="mx-auto text-slate-300 mb-4" />
-            <p className="text-slate-500 text-lg">No hay citas programadas para esta fecha</p>
+          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <CalendarIcon size={48} className="mx-auto text-slate-300 mb-3" />
+            <p className="text-slate-500 text-sm">No hay citas programadas para esta fecha</p>
           </div>
         ) : (
           filteredAppointments.map((apt) => (
