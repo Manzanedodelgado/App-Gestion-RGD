@@ -151,6 +151,7 @@ async def sync_appointments():
                 # Agregar a la lista para ordenar después
                 pending_appointments.append({
                     'row_idx': row_idx,
+                    'registro': registro,
                     'nombre': nombre,
                     'telefono': telefono,
                     'fecha': fecha,
@@ -158,7 +159,8 @@ async def sync_appointments():
                     'appointment_datetime': appointment_datetime,
                     'tratamiento': tratamiento,
                     'doctor': doctor,
-                    'notas': notas
+                    'notas': notas,
+                    'estado_cita': estado_cita
                 })
                 
             except Exception as e:
