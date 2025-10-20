@@ -189,15 +189,29 @@ async def sync_appointments():
                 
                 if existing_appointment:
                     print(f"Fila {row_idx}: Cita con registro {registro} ya existe, actualizando...")
-                    # Actualizar la cita existente
+                    
+                    # Separar nombre y apellidos para actualización
+                    nombre_parts = nombre.split(' ', 1)
+                    nombre_solo = nombre_parts[0] if len(nombre_parts) > 0 else nombre
+                    apellidos_solo = nombre_parts[1] if len(nombre_parts) > 1 else ''
+                    
+                    # Actualizar la cita existente con todos los campos
                     await db.appointments.update_one(
                         {"registro": registro},
                         {"$set": {
                             "patient_name": nombre,
                             "patient_phone": telefono,
+                            "nombre": nombre_solo,
+                            "apellidos": apellidos_solo,
+                            "fecha": apt_data['fecha'],
+                            "hora": apt_data['hora'],
+                            "tratamiento": tratamiento or "Consulta",
+                            "estado_cita": estado_cita.lower() if estado_cita else "planificada",
+                            "odontologo": doctor or "Dra. Virginia Tresgallo",
+                            "notas": notas,
+                            "tel_movil": telefono,
                             "title": tratamiento or "Consulta",
                             "date": appointment_datetime.isoformat(),
-                            "notes": notas,
                             "doctor": doctor or "Dra. Virginia Tresgallo",
                             "status": estado_cita.lower() if estado_cita else "planificada"
                         }}
