@@ -9,7 +9,10 @@ import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-const SOCKET_URL = 'http://localhost:3001';
+// Socket connection to WhatsApp service
+// In production, this would need to be proxied through the backend
+// For now, we'll use polling for QR updates instead of socket
+const SOCKET_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : null;
 
 const Messages = () => {
   const [whatsappStatus, setWhatsappStatus] = useState({ ready: false, hasQR: false });
