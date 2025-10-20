@@ -174,13 +174,35 @@ async def sync_appointments():
         # Ahora procesar las citas ordenadas
         for apt_data in pending_appointments:
             try:
+                registro = apt_data['registro']
                 nombre = apt_data['nombre']
                 telefono = apt_data['telefono']
                 appointment_datetime = apt_data['appointment_datetime']
                 tratamiento = apt_data['tratamiento']
                 doctor = apt_data['doctor']
                 notas = apt_data['notas']
+                estado_cita = apt_data['estado_cita']
                 row_idx = apt_data['row_idx']
+                
+                # Buscar si ya existe una cita con este registro (ID único)
+                existing_appointment = await db.appointments.find_one({"registro": registro})
+                
+                if existing_appointment:
+                    print(f"Fila {row_idx}: Cita con registro {registro} ya existe, actualizando...")
+                    # Actualizar la cita existente
+                    await db.appointments.update_one(
+                        {"registro": registro},
+                        {"$set": {
+                            "patient_name": nombre,
+                            "patient_phone": telefono,
+                            "title": tratamiento or "Consulta",
+                            "date": appointment_datetime.isoformat(),
+                            "notes": notas,
+                            "doctor": doctor or "Dra. Virginia Tresgallo",
+                            "status": estado_cita.lower() if estado_cita else "planificada"
+                        }}
+                    )
+                    continue
                 
                 # Buscar o crear paciente
                 patient = await db.patients.find_one({"phone": telefono})
@@ -201,16 +223,6 @@ async def sync_appointments():
                     print(f"✓ Paciente creado: {nombre}")
                 else:
                     patient_id = patient['id']
-                
-                # Buscar si ya existe una cita con la misma fecha/hora y paciente
-                existing_appointment = await db.appointments.find_one({
-                    "patient_id": patient_id,
-                    "date": appointment_datetime.isoformat()
-                })
-                
-                if existing_appointment:
-                    print(f"Fila {row_idx}: Cita ya existe para {nombre} en {fecha} {hora}")
-                    continue
                 
                 # Crear cita
                 appointment_doc = {
