@@ -3,7 +3,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 const QRCode = require('qrcode');
 const cors = require('cors');
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { Boom } = require('@hapi/boom');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,73 +18,80 @@ const io = socketIo(server, {
 app.use(cors());
 app.use(express.json());
 
+let sock = null;
 let isReady = false;
 let qrCode = null;
 let clientInfo = null;
 let chats = [];
-let messages = {};
 
-// Initialize WhatsApp Client
-const client = new Client({
-  authStrategy: new LocalAuth({
-    dataPath: '/tmp/.wwebjs_auth'
-  }),
-  puppeteer: {
-    headless: true,
-    executablePath: '/usr/bin/chromium',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--no-first-run',
-      '--no-zygote',
-      '--disable-gpu'
-    ]
-  }
-});
+// Initialize WhatsApp with Baileys
+async function connectToWhatsApp() {
+  const { state, saveCreds } = await useMultiFileAuthState('/tmp/baileys_auth');
+  
+  sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: false
+  });
 
-// WhatsApp events
-client.on('qr', async (qr) => {
-  console.log('QR Code received');
-  qrCode = await QRCode.toDataURL(qr);
-  io.emit('qr', qrCode);
-});
+  // Save credentials on update
+  sock.ev.on('creds.update', saveCreds);
 
-client.on('ready', () => {
-  console.log('WhatsApp Client is ready!');
-  isReady = true;
-  clientInfo = {
-    pushname: client.info.pushname,
-    wid: client.info.wid._serialized
-  };
-  qrCode = null;
-  io.emit('ready', clientInfo);
-});
+  // Connection update event
+  sock.ev.on('connection.update', async (update) => {
+    const { connection, lastDisconnect, qr } = update;
 
-client.on('authenticated', () => {
-  console.log('WhatsApp Client authenticated');
-});
+    // Handle QR code
+    if (qr) {
+      console.log('QR Code received');
+      qrCode = await QRCode.toDataURL(qr);
+      io.emit('qr', qrCode);
+    }
 
-client.on('auth_failure', (msg) => {
-  console.error('Authentication failed:', msg);
-});
+    // Handle connection status
+    if (connection === 'close') {
+      const shouldReconnect = (lastDisconnect?.error instanceof Boom)
+        ? lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut
+        : true;
+      
+      console.log('Connection closed. Reconnecting:', shouldReconnect);
+      isReady = false;
+      clientInfo = null;
+      io.emit('disconnected');
+      
+      if (shouldReconnect) {
+        setTimeout(() => connectToWhatsApp(), 3000);
+      }
+    } else if (connection === 'open') {
+      console.log('WhatsApp connected successfully!');
+      isReady = true;
+      qrCode = null;
+      
+      // Get user info
+      const user = sock.user;
+      clientInfo = {
+        pushname: user.name || 'Usuario',
+        wid: user.id
+      };
+      
+      io.emit('ready', clientInfo);
+    }
+  });
 
-client.on('disconnected', (reason) => {
-  console.log('WhatsApp Client disconnected:', reason);
-  isReady = false;
-  clientInfo = null;
-  io.emit('disconnected');
-});
-
-// Initialize WhatsApp client
-async function initializeWhatsApp() {
-  console.log('Initializing WhatsApp Client...');
-  try {
-    await client.initialize();
-  } catch (error) {
-    console.error('Error initializing WhatsApp:', error);
-  }
+  // Handle incoming messages
+  sock.ev.on('messages.upsert', async ({ messages, type }) => {
+    if (type === 'notify') {
+      for (const msg of messages) {
+        if (!msg.key.fromMe && msg.message) {
+          console.log('New message received:', msg.key.remoteJid);
+          io.emit('message', {
+            from: msg.key.remoteJid,
+            body: msg.message.conversation || msg.message.extendedTextMessage?.text || '',
+            timestamp: msg.messageTimestamp
+          });
+        }
+      }
+    }
+  });
 }
 
 // REST API endpoints
