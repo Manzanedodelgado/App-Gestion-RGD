@@ -287,7 +287,7 @@ const Messages = () => {
             <ScrollArea className="flex-1 p-4 bg-gray-50">
               {loading ? (
                 <div className="flex justify-center items-center h-full">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0071BC]"></div>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="flex justify-center items-center h-full text-gray-500">
