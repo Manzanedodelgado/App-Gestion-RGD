@@ -177,7 +177,7 @@ const ConversationList = ({
       </div>
 
       {/* Búsqueda con fondo oscuro */}
-      <div className="p-3 bg-[#283593] border-b border-[#1E2082]">
+      <div className="p-3 bg-[#312ea3] border-b border-[#2820a0]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300" size={18} />
           <Input
