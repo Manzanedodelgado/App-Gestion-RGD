@@ -19,7 +19,7 @@ async def handle_whatsapp_incoming(db, message_data: Dict):
         timestamp = message_data.get('timestamp', datetime.now(timezone.utc).timestamp())
         
         # 1. Find or create Contact
-        contact = await db.contacts.find_one({'phone': from_number})
+        contact = await db.contacts.find_one({'phone': from_number}, {'_id': 0})
         
         if not contact:
             # Create new contact
@@ -41,7 +41,7 @@ async def handle_whatsapp_incoming(db, message_data: Dict):
             )
         
         # 2. Find or create Conversation
-        conversation = await db.conversations.find_one({'contact_id': contact['id']})
+        conversation = await db.conversations.find_one({'contact_id': contact['id']}, {'_id': 0})
         
         if not conversation:
             # Create new conversation
@@ -100,13 +100,15 @@ async def handle_whatsapp_incoming(db, message_data: Dict):
         
         return {
             'success': True,
-            'contact': contact,
-            'conversation': conversation,
-            'message': message
+            'contact_id': contact['id'],
+            'conversation_id': conversation['id'],
+            'message_id': message['id']
         }
         
     except Exception as e:
         print(f"❌ Error handling incoming message: {e}")
+        import traceback
+        traceback.print_exc()
         return {'success': False, 'error': str(e)}
 
 
