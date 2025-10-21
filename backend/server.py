@@ -711,157 +711,16 @@ async def generate_ai_response(request: Dict):
 
 
 # ============================================
-# MESSAGING SYSTEM - Contacts, Conversations, Messages
+# MESSAGING SYSTEM - Import from separate router
 # ============================================
 
-from functions.whatsapp_handlers import handle_whatsapp_incoming, whatsapp_send_message
-from functions.handle_whatsapp_response import handle_whatsapp_response
-from functions.classify_conversations import classify_single_conversation, classify_all_conversations, get_conversations_by_color
+from messaging_routes import messaging_router, init_messaging_routes
 
-# Get all conversations
-@api_router.get("/conversations")
-async def get_conversations(color: str = None):
-    """Get all conversations, optionally filtered by color"""
-    try:
-        query = {}
-        if color:
-            query['color_code'] = color
-        
-        conversations = await db.conversations.find(query).sort('last_message_at', -1).to_list(None)
-        return conversations
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# Initialize messaging routes with database and WhatsApp URL
+init_messaging_routes(db, WHATSAPP_SERVICE_URL)
 
-# Get conversation by ID
-@api_router.get("/conversations/{conversation_id}")
-async def get_conversation(conversation_id: str):
-    """Get a specific conversation"""
-    try:
-        conversation = await db.conversations.find_one({'id': conversation_id})
-        if not conversation:
-            raise HTTPException(status_code=404, detail="Conversation not found")
-        return conversation
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Get messages for a conversation
-@api_router.get("/conversations/{conversation_id}/messages")
-async def get_conversation_messages(conversation_id: str, limit: int = 50):
-    """Get messages for a conversation"""
-    try:
-        messages = await db.messages.find(
-            {'conversation_id': conversation_id}
-        ).sort('timestamp', -1).limit(limit).to_list(limit)
-        
-        # Reverse to show oldest first
-        messages.reverse()
-        return messages
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Send message
-@api_router.post("/conversations/{conversation_id}/send")
-async def send_message_to_conversation(conversation_id: str, request: Dict):
-    """Send a message to a conversation"""
-    try:
-        message_text = request.get('message', '')
-        buttons = request.get('buttons', None)
-        
-        result = await whatsapp_send_message(
-            db,
-            WHATSAPP_SERVICE_URL,
-            conversation_id,
-            message_text,
-            buttons
-        )
-        
-        if not result['success']:
-            raise HTTPException(status_code=500, detail=result.get('error'))
-        
-        return result
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Mark conversation as read
-@api_router.post("/conversations/{conversation_id}/mark-read")
-async def mark_conversation_read(conversation_id: str):
-    """Mark conversation as read"""
-    try:
-        await db.conversations.update_one(
-            {'id': conversation_id},
-            {'$set': {'unread_count': 0}}
-        )
-        return {"success": True}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Classify conversations
-@api_router.post("/conversations/classify")
-async def classify_conversations():
-    """Classify all conversations"""
-    try:
-        result = await classify_all_conversations(db)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Classify single conversation
-@api_router.post("/conversations/{conversation_id}/classify")
-async def classify_conversation(conversation_id: str):
-    """Classify a single conversation"""
-    try:
-        result = await classify_single_conversation(db, conversation_id)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Handle button response
-@api_router.post("/conversations/button-response")
-async def handle_button_response(request: Dict):
-    """Handle button click response"""
-    try:
-        result = await handle_whatsapp_response(db, WHATSAPP_SERVICE_URL, request)
-        
-        if not result['success']:
-            raise HTTPException(status_code=500, detail=result.get('error'))
-        
-        return result
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Webhook endpoint for incoming WhatsApp messages
-@api_router.post("/whatsapp/webhook")
-async def whatsapp_webhook(request: Request):
-    """Webhook to receive incoming WhatsApp messages"""
-    try:
-        message_data = await request.json()
-        result = await handle_whatsapp_incoming(db, message_data)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Get contacts
-@api_router.get("/contacts")
-async def get_contacts(search: str = None):
-    """Get all contacts"""
-    try:
-        query = {}
-        if search:
-            query['$or'] = [
-                {'name': {'$regex': search, '$options': 'i'}},
-                {'phone': {'$regex': search, '$options': 'i'}}
-            ]
-        
-        contacts = await db.contacts.find(query).sort('updated_at', -1).to_list(None)
-        return contacts
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# Include messaging router
+app.include_router(messaging_router)
 
 print("✅ Sistema de mensajería completo iniciado")
 print("   - Gestión de contactos y conversaciones")
