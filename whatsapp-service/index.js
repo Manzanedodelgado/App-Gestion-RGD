@@ -190,6 +190,7 @@ app.post('/logout', async (req, res) => {
   }
 });
 
+
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('Client connected to socket');
@@ -210,7 +211,7 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`WhatsApp service running on port ${PORT}`);
-  console.log('Inicializando cliente de WhatsApp...');
+  console.log('Inicializando cliente de WhatsApp con Baileys...');
   console.log('Para conectar, escanea el código QR que aparecerá en la interfaz web');
-  initializeWhatsApp();
+  connectToWhatsApp().catch(err => console.error('Error connecting to WhatsApp:', err));
 });
