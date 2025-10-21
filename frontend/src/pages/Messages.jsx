@@ -158,7 +158,7 @@ const Messages = () => {
       setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
       toast.error('Error al enviar mensaje');
       throw error;
-
+    }
   };
 
   const handleClassify = async (conversationId, classification) => {
