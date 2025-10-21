@@ -288,6 +288,7 @@ const Messages = () => {
           onSelectContact={handleSelectContact}
           onArchive={handleArchive}
           onDelete={handleDelete}
+          onNewChat={handleNewChat}
         />
       </div>
 
