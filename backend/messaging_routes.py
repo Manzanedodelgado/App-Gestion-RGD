@@ -163,3 +163,51 @@ async def get_contacts(search: str = None):
         return contacts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@messaging_router.get("/message-flows")
+async def get_message_flows():
+    """Get all message flow templates"""
+    try:
+        # Return predefined templates
+        templates = [
+            {
+                "id": "confirmation-24h",
+                "name": "Recordatorio 24h",
+                "category": "confirmacion",
+                "template": "Hola {nombre}, te recordamos tu cita programada para mañana a las {hora}. ¿Confirmas tu asistencia?"
+            },
+            {
+                "id": "confirmation-1h",
+                "name": "Recordatorio 1h",
+                "category": "confirmacion",
+                "template": "Hola {nombre}, tu cita es en 1 hora. Nos vemos a las {hora}."
+            },
+            {
+                "id": "confirmation-request",
+                "name": "Confirmar cita",
+                "category": "confirmacion",
+                "template": "Hola {nombre}, te escribimos para confirmar tu cita del {fecha} a las {hora}. Por favor responde SI para confirmar."
+            },
+            {
+                "id": "consent-lopd",
+                "name": "LOPD",
+                "category": "consentimientos",
+                "template": "Hola {nombre}, necesitamos que firmes el consentimiento LOPD. Por favor accede a este enlace: {enlace}"
+            },
+            {
+                "id": "consent-health",
+                "name": "Cuestionario Salud",
+                "category": "consentimientos",
+                "template": "Hola {nombre}, por favor completa el cuestionario de salud antes de tu cita: {enlace}"
+            },
+            {
+                "id": "consent-implant",
+                "name": "Implante",
+                "category": "consentimientos",
+                "template": "Hola {nombre}, adjuntamos el consentimiento informado para el tratamiento de implante: {enlace}"
+            }
+        ]
+        return templates
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
