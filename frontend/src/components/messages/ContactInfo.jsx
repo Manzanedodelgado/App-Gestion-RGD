@@ -12,6 +12,15 @@ const ContactInfo = ({ contact, onUpdateContact, appointments = [] }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContact, setEditedContact] = useState(contact || {});
 
+  const getAvatarColor = (colorCode) => {
+    const colors = {
+      'AMARILLO': 'bg-yellow-400 text-gray-900',
+      'AZUL': 'bg-blue-500 text-white',
+      'VERDE': 'bg-green-500 text-white'
+    };
+    return colors[colorCode] || 'bg-gray-300 text-gray-700';
+  };
+
   const handleSave = async () => {
     try {
       await onUpdateContact(editedContact);
