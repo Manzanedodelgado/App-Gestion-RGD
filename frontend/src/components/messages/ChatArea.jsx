@@ -82,6 +82,15 @@ const ChatArea = ({
     }
   };
 
+  const getAvatarColor = (colorCode) => {
+    const colors = {
+      'AMARILLO': 'bg-yellow-400 text-gray-900',
+      'AZUL': 'bg-blue-500 text-white',
+      'VERDE': 'bg-green-500 text-white'
+    };
+    return colors[colorCode] || 'bg-white text-[#312ea3]';
+  };
+
   if (!selectedContact) {
     return (
       <div className="flex-1 flex items-center justify-center bg-white">
