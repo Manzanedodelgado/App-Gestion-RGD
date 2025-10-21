@@ -55,7 +55,7 @@ async def get_conversation_messages(conversation_id: str, limit: int = 50):
     """Get messages for a conversation"""
     try:
         messages = await db.messages.find(
-            {'conversation_id': conversation_id}
+            {'conversation_id': conversation_id}, {'_id': 0}
         ).sort('timestamp', -1).limit(limit).to_list(limit)
         
         # Reverse to show oldest first
