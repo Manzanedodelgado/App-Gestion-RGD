@@ -472,6 +472,277 @@ async def startup_event():
     # Ejecutar una sincronización inmediata al iniciar
     asyncio.create_task(auto_sync_appointments())
 
+
+
+# ============================================
+# AUTOMATION SYSTEM - Message Flows & Templates
+# ============================================
+
+from automation_service import AIAssistant, MessageFlowEngine, ReminderScheduler
+from google_sheets_service import GoogleSheetsService
+
+# Initialize services
+ai_assistant = AIAssistant()
+google_sheets_service = GoogleSheetsService()
+
+# Pydantic models for Automation
+class MessageFlowStep(BaseModel):
+    name: str
+    message: str
+    actions: List[Dict] = []
+    delay: int = 0
+
+class MessageFlow(BaseModel):
+    id: Optional[str] = None
+    name: str
+    category: str
+    steps: List[MessageFlowStep] = []
+    active: bool = True
+
+class ConsentTemplate(BaseModel):
+    id: Optional[str] = None
+    treatment_name: str
+    code: str
+    title: str
+    description: str
+    risks: List[str] = []
+    alternatives: str = ""
+    post_care: str = ""
+
+class AIConfig(BaseModel):
+    ai_active: bool = False
+    auto_response: bool = False
+    classification_active: bool = True
+    personality: str = "Soy el asistente virtual de Rubio García Dental. Soy profesional, amable y siempre dispuesto a ayudar con consultas sobre tratamientos dentales."
+    knowledge_topics: List[str] = []
+    work_schedules: List[Dict] = []
+
+# ============================================
+# MESSAGE FLOWS ENDPOINTS
+# ============================================
+
+@api_router.get("/message-flows")
+async def get_message_flows():
+    """Get all message flows"""
+    try:
+        flows = await db.message_flows.find().to_list(None)
+        return flows
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/message-flows")
+async def create_message_flow(flow: MessageFlow):
+    """Create a new message flow"""
+    try:
+        flow_dict = flow.dict(exclude={'id'})
+        flow_dict['id'] = str(uuid.uuid4())
+        flow_dict['created_at'] = datetime.now(timezone.utc).isoformat()
+        
+        await db.message_flows.insert_one(flow_dict)
+        return {"success": True, "flow": flow_dict}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/message-flows/{flow_id}")
+async def update_message_flow(flow_id: str, flow: MessageFlow):
+    """Update a message flow"""
+    try:
+        flow_dict = flow.dict(exclude={'id'})
+        flow_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        result = await db.message_flows.update_one(
+            {'id': flow_id},
+            {'$set': flow_dict}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Flow not found")
+        
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/message-flows/{flow_id}")
+async def delete_message_flow(flow_id: str):
+    """Delete a message flow"""
+    try:
+        result = await db.message_flows.delete_one({'id': flow_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Flow not found")
+        
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================
+# CONSENT TEMPLATES ENDPOINTS
+# ============================================
+
+@api_router.get("/consent-templates")
+async def get_consent_templates():
+    """Get all consent templates"""
+    try:
+        templates = await db.consent_templates.find().to_list(None)
+        return templates
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/consent-templates")
+async def create_consent_template(template: ConsentTemplate):
+    """Create a new consent template"""
+    try:
+        template_dict = template.dict(exclude={'id'})
+        template_dict['id'] = str(uuid.uuid4())
+        template_dict['created_at'] = datetime.now(timezone.utc).isoformat()
+        
+        await db.consent_templates.insert_one(template_dict)
+        return {"success": True, "template": template_dict}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/consent-templates/{template_id}")
+async def update_consent_template(template_id: str, template: ConsentTemplate):
+    """Update a consent template"""
+    try:
+        template_dict = template.dict(exclude={'id'})
+        template_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        result = await db.consent_templates.update_one(
+            {'id': template_id},
+            {'$set': template_dict}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Template not found")
+        
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/consent-templates/{template_id}")
+async def delete_consent_template(template_id: str):
+    """Delete a consent template"""
+    try:
+        result = await db.consent_templates.delete_one({'id': template_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Template not found")
+        
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================
+# AI CONFIGURATION ENDPOINTS
+# ============================================
+
+@api_router.get("/ai-config")
+async def get_ai_config():
+    """Get AI configuration"""
+    try:
+        config = await db.ai_config.find_one()
+        if not config:
+            # Return default config
+            default_config = {
+                'ai_active': False,
+                'auto_response': False,
+                'classification_active': True,
+                'personality': ai_assistant.personality,
+                'knowledge_topics': [],
+                'work_schedules': []
+            }
+            return default_config
+        return config
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/ai-config")
+async def update_ai_config(config: AIConfig):
+    """Update AI configuration"""
+    try:
+        config_dict = config.dict()
+        config_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        # Update assistant personality if changed
+        if config.personality:
+            ai_assistant.personality = config.personality
+        
+        # Upsert config
+        await db.ai_config.update_one(
+            {},
+            {'$set': config_dict},
+            upsert=True
+        )
+        
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/ai-classify")
+async def classify_message(message: Dict):
+    """Classify a message using AI"""
+    try:
+        text = message.get('text', '')
+        classification = ai_assistant.classify_conversation(text)
+        return {"classification": classification}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/ai-respond")
+async def generate_ai_response(request: Dict):
+    """Generate AI response to a message"""
+    try:
+        message = request.get('message', '')
+        context = request.get('context', [])
+        
+        response = await ai_assistant.generate_response(message, context)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================
+# AUTOMATIC REMINDERS
+# ============================================
+
+async def run_reminder_scheduler():
+    """Background task to check and send reminders"""
+    while True:
+        try:
+            await ReminderScheduler.check_and_send_reminders(
+                db, 
+                WHATSAPP_SERVICE_URL, 
+                google_sheets_service
+            )
+        except Exception as e:
+            print(f"Error in reminder scheduler: {e}")
+        
+        # Wait 1 hour before next check
+        await asyncio.sleep(3600)
+
+# Add reminder scheduler job
+scheduler.add_job(
+    lambda: asyncio.create_task(run_reminder_scheduler()),
+    trigger=IntervalTrigger(hours=1),
+    id='reminder_scheduler_job',
+    name='Check and send appointment reminders',
+    replace_existing=True
+)
+
+print("✅ Sistema de automatizaciones iniciado")
+print("   - Flujos de mensajes")
+print("   - Plantillas de consentimiento")
+print("   - Asistente IA con DeepSeek (gratuito)")
+print("   - Recordatorios automáticos cada hora")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     scheduler.shutdown()
