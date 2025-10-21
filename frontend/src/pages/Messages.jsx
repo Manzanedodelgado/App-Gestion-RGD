@@ -38,8 +38,10 @@ const Messages = () => {
   useEffect(() => {
     checkWhatsAppStatus();
     loadInitialData();
-    
-    // Poll para actualizaciones
+  }, []);
+
+  // Poll para actualizaciones - separado para capturar selectedContact correctamente
+  useEffect(() => {
     const pollInterval = setInterval(() => {
       checkWhatsAppStatus();
       if (selectedContact) {
@@ -49,7 +51,7 @@ const Messages = () => {
     }, 5000);
     
     return () => clearInterval(pollInterval);
-  }, []);
+  }, [selectedContact]);
 
   useEffect(() => {
     if (selectedContact) {
