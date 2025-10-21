@@ -143,111 +143,197 @@ const Messages = () => {
     }
   };
 
-  const filteredConversations = conversations.filter(conv =>
-    conv.contact_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    conv.contact_phone?.includes(searchQuery)
-  );
-      return () => clearInterval(interval);
-    }
-  }, [whatsappStatus.ready]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const checkWhatsAppStatus = async () => {
-    try {
-      const response = await axios.get(`${API}/whatsapp/status`);
-      setWhatsappStatus(response.data);
-      if (response.data.hasQR) {
-        const qrResponse = await axios.get(`${API}/whatsapp/qr`);
-        setQrCode(qrResponse.data.qr);
-      }
-    } catch (error) {
-      console.error('Error checking WhatsApp status:', error);
-    }
-  };
-
-  const fetchChats = async () => {
-    try {
-      const response = await axios.get(`${API}/whatsapp/chats`);
-      setChats(response.data.filter(chat => !chat.isGroup));
-    } catch (error) {
-      console.error('Error fetching chats:', error);
-    }
-  };
-
-  const selectChat = async (chat) => {
-    setSelectedChat(chat);
-    try {
-      const response = await axios.get(`${API}/whatsapp/messages/${chat.id}`);
-      setMessages(response.data);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      toast.error('Error al cargar mensajes');
-    }
-  };
-
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedChat) return;
-
-    try {
-      const number = selectedChat.id.split('@')[0];
-      await axios.post(`${API}/whatsapp/send-message`, {
-        number,
-        message: newMessage
-      });
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          body: newMessage,
-          fromMe: true,
-          timestamp: Date.now() / 1000,
-          type: 'chat'
-        }
-      ]);
-
-      setNewMessage('');
-      toast.success('Mensaje enviado');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast.error('Error al enviar mensaje');
-    }
-  };
-
-  const filteredChats = chats.filter((chat) =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  // QR Code screen
   if (!whatsappStatus.ready && qrCode) {
     return (
-      <div className="whatsapp-container" data-testid="whatsapp-qr-container">
-        <div className="qr-container">
-          <h2 className="qr-title">Conectar WhatsApp</h2>
-          <p className="qr-subtitle">Escanea el código QR con tu teléfono</p>
-          <div className="qr-code">
-            <img src={qrCode} alt="QR Code" />
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+          <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Conectar WhatsApp</h2>
+          <p className="text-center text-gray-600 mb-6">Escanea el código QR con tu teléfono</p>
+          <div className="flex justify-center mb-6 bg-white p-4 rounded-xl border-2 border-green-500">
+            <img src={qrCode} alt="QR Code" className="w-64 h-64" />
           </div>
-          <div className="qr-instructions">
-            <p>1. Abre WhatsApp en tu teléfono</p>
-            <p>2. Ve a Configuración → Dispositivos vinculados</p>
-            <p>3. Toca "Vincular un dispositivo"</p>
-            <p>4. Escanea este código QR</p>
+          <div className="space-y-2 text-sm text-gray-600">
+            <p className="flex items-center gap-2"><span className="font-bold text-green-600">1.</span> Abre WhatsApp en tu teléfono</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-green-600">2.</span> Ve a Configuración → Dispositivos vinculados</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-green-600">3.</span> Toca "Vincular un dispositivo"</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-green-600">4.</span> Escanea este código QR</p>
           </div>
         </div>
       </div>
     );
   }
 
+  // Loading screen
   if (!whatsappStatus.ready) {
     return (
-      <div className="whatsapp-container" data-testid="whatsapp-loading">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p className="loading-text">Iniciando WhatsApp...</p>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600 mx-auto mb-4"></div>
+          <p className="text-xl text-gray-700 font-semibold">Iniciando WhatsApp...</p>
         </div>
+      </div>
+    );
+  }
+
+  // Main chat interface
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Conversations List */}
+      <div className="w-1/3 bg-white border-r border-gray-300 flex flex-col">
+        <div className="p-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
+          <h2 className="text-xl font-bold">WhatsApp Pro Web</h2>
+          <p className="text-sm text-green-100">
+            {conversations.length} conversacion{conversations.length !== 1 ? 'es' : ''}
+          </p>
+        </div>
+
+        <div className="p-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Input
+              type="text"
+              placeholder="Buscar conversaciones..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-full"
+            />
+          </div>
+        </div>
+
+        <ScrollArea className="flex-1">
+          {filteredConversations.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              <p className="text-lg font-semibold mb-2">No hay conversaciones</p>
+              <p className="text-sm">Los mensajes que recibas aparecerán aquí</p>
+            </div>
+          ) : (
+            filteredConversations.map((conv) => (
+              <div
+                key={conv.id}
+                onClick={() => setSelectedConversation(conv)}
+                className={`p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
+                  selectedConversation?.id === conv.id ? 'bg-green-50' : ''
+                } ${getColorClass(conv.color_code)}`}
+              >
+                <div className="flex justify-between items-start mb-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-800">{conv.contact_name}</h3>
+                    {getColorBadge(conv.color_code)}
+                  </div>
+                  {conv.unread_count > 0 && (
+                    <span className="bg-green-600 text-white text-xs font-bold rounded-full px-2 py-1">
+                      {conv.unread_count}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-600 truncate">{conv.last_message}</p>
+                <p className="text-xs text-gray-400 mt-1">{conv.contact_phone}</p>
+              </div>
+            ))
+          )}
+        </ScrollArea>
+      </div>
+
+      {/* Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {selectedConversation ? (
+          <>
+            {/* Chat Header */}
+            <div className="p-4 bg-gradient-to-r from-green-600 to-green-700 text-white flex justify-between items-center">
+              <div>
+                <h3 className="font-bold text-lg">{selectedConversation.contact_name}</h3>
+                <p className="text-sm text-green-100">{selectedConversation.contact_phone}</p>
+              </div>
+              <div className="flex gap-2">
+                {getColorBadge(selectedConversation.color_code)}
+                <Button variant="ghost" size="sm" className="text-white hover:bg-green-700">
+                  <Phone size={20} />
+                </Button>
+                <Button variant="ghost" size="sm" className="text-white hover:bg-green-700">
+                  <Video size={20} />
+                </Button>
+                <Button variant="ghost" size="sm" className="text-white hover:bg-green-700">
+                  <MoreVertical size={20} />
+                </Button>
+              </div>
+            </div>
+
+            {/* Messages Area */}
+            <ScrollArea className="flex-1 p-4 bg-gray-50">
+              {loading ? (
+                <div className="flex justify-center items-center h-full">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                </div>
+              ) : messages.length === 0 ? (
+                <div className="flex justify-center items-center h-full text-gray-500">
+                  <p>No hay mensajes en esta conversación</p>
+                </div>
+              ) : (
+                messages.map((msg, index) => (
+                  <div
+                    key={msg.id || index}
+                    className={`flex mb-4 ${msg.from_me ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-lg shadow ${
+                        msg.from_me
+                          ? 'bg-green-500 text-white'
+                          : 'bg-white text-gray-800'
+                      }`}
+                    >
+                      <p className="break-words">{msg.text}</p>
+                      <p className={`text-xs mt-1 ${msg.from_me ? 'text-green-100' : 'text-gray-500'}`}>
+                        {new Date(msg.timestamp).toLocaleTimeString('es-ES', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+              <div ref={messagesEndRef} />
+            </ScrollArea>
+
+            {/* Message Input */}
+            <div className="p-4 bg-white border-t border-gray-300 flex gap-2">
+              <Button variant="ghost" size="icon">
+                <Smile className="text-gray-600" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Paperclip className="text-gray-600" />
+              </Button>
+              <Input
+                type="text"
+                placeholder="Escribe un mensaje..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                className="flex-1"
+              />
+              <Button onClick={sendMessage} className="bg-green-600 hover:bg-green-700">
+                <Send size={20} />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Mic className="text-gray-600" />
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-gray-50">
+            <div className="text-center text-gray-500">
+              <h3 className="text-2xl font-bold mb-2">WhatsApp Pro Web</h3>
+              <p>Selecciona una conversación para comenzar</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Messages;
       </div>
     );
   }
