@@ -32,7 +32,7 @@ const MessageBubble = ({ message }) => {
         <p className="break-words whitespace-pre-wrap">{message.text}</p>
         
         <div className="flex items-center justify-end gap-1 mt-1">
-          <span className="text-xs text-gray-600">
+          <span className={`text-xs ${isOutbound ? 'text-white' : 'text-gray-600'}`}>
             {new Date(message.timestamp).toLocaleTimeString('es-ES', {
               hour: '2-digit',
               minute: '2-digit'
