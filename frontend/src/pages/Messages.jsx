@@ -143,6 +143,12 @@ const Messages = () => {
     }
   };
 
+
+  const filteredConversations = conversations.filter(conv =>
+    conv.contact_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    conv.contact_phone?.includes(searchQuery)
+  );
+
   // QR Code screen
   if (!whatsappStatus.ready && qrCode) {
     return (
