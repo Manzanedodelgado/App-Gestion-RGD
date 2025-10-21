@@ -84,9 +84,9 @@ const ChatArea = ({
 
   const getBorderClass = (colorCode) => {
     const borders = {
-      'AMARILLO': 'border-l-8 border-yellow-500',
-      'AZUL': 'border-l-8 border-blue-500',
-      'VERDE': 'border-l-8 border-green-500'
+      'AMARILLO': 'border-l-[12px] border-yellow-500',
+      'AZUL': 'border-l-[12px] border-blue-500',
+      'VERDE': 'border-l-[12px] border-green-500'
     };
     return borders[colorCode] || '';
   };
