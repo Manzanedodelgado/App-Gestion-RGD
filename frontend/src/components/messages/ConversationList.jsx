@@ -45,7 +45,7 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
     >
       {/* Avatar simple */}
       <div className="flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold">
+        <div className="w-12 h-12 rounded-full bg-white text-[#312ea3] flex items-center justify-center font-semibold text-lg">
           {conversation.contact_name?.charAt(0).toUpperCase() || '?'}
         </div>
       </div>
