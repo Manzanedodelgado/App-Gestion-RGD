@@ -216,9 +216,10 @@ function DashboardContent() {
                   {priorityConversations.map((conv) => {
                     const isUrgent = conv.color_code === 'AMARILLO';
                     const borderColor = isUrgent ? 'border-[#FBBF24]' : 'border-[#0071BC]';
-                    const avatarBg = isUrgent ? 'from-[#FBBF24] to-[#F59E0B]' : 'from-[#0071BC] to-[#0000FF]';
-                    const dotColor = isUrgent ? 'bg-[#FBBF24]' : 'bg-[#0071BC]';
                     const textColor = isUrgent ? 'text-[#F59E0B]' : 'text-[#0071BC]';
+                    const avatarTextColor = isUrgent ? 'text-yellow-500' : 'text-blue-600';
+                    const avatarBorderColor = isUrgent ? 'border-yellow-500' : 'border-blue-600';
+                    const dotColor = isUrgent ? 'bg-[#FBBF24]' : 'bg-[#0071BC]';
                     
                     return (
                       <Link
@@ -227,8 +228,8 @@ function DashboardContent() {
                         className={`flex items-center gap-3 p-3 bg-white border-l-4 ${borderColor} rounded-lg hover:shadow transition-shadow`}
                       >
                         <div className="relative flex-shrink-0">
-                          <div className={`w-12 h-12 bg-gradient-to-br ${avatarBg} rounded-full flex items-center justify-center`}>
-                            <span className="text-white font-semibold text-base">
+                          <div className={`w-12 h-12 bg-white border-2 ${avatarBorderColor} rounded-full flex items-center justify-center`}>
+                            <span className={`${avatarTextColor} font-semibold text-base`}>
                               {conv.contact_name?.charAt(0).toUpperCase() || '?'}
                             </span>
                           </div>
