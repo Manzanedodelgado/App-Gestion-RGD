@@ -269,6 +269,7 @@ const Messages = () => {
             messages={messages}
             onSendMessage={handleSendMessage}
             onBack={() => setSelectedContact(null)}
+            onClassify={handleClassify}
             messageTemplates={messageTemplates}
             isMobile={true}
           />
