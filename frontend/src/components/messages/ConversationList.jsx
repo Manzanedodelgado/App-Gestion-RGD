@@ -11,13 +11,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDelete }) => {
-  const getColorBorder = (colorCode) => {
+  const getAvatarColor = (colorCode) => {
     const colors = {
-      'AMARILLO': 'border-l-8 border-yellow-500',
-      'AZUL': 'border-l-8 border-blue-500',
-      'VERDE': 'border-l-8 border-green-500'
+      'AMARILLO': 'bg-yellow-400 text-gray-900',
+      'AZUL': 'bg-blue-500 text-white',
+      'VERDE': 'bg-green-500 text-white'
     };
-    return colors[colorCode] || '';
+    return colors[colorCode] || 'bg-white text-[#312ea3]';
   };
 
   const formatTime = (timestamp) => {
