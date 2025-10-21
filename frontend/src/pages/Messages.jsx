@@ -170,18 +170,18 @@ const Messages = () => {
   // QR Code screen
   if (!whatsappStatus.ready && qrCode) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
           <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">Conectar WhatsApp</h2>
           <p className="text-center text-gray-600 mb-6">Escanea el código QR con tu teléfono</p>
-          <div className="flex justify-center mb-6 bg-white p-4 rounded-xl border-2 border-green-500">
+          <div className="flex justify-center mb-6 bg-white p-4 rounded-xl border-2 border-[#0071BC]">
             <img src={qrCode} alt="QR Code" className="w-64 h-64" />
           </div>
           <div className="space-y-2 text-sm text-gray-600">
-            <p className="flex items-center gap-2"><span className="font-bold text-green-600">1.</span> Abre WhatsApp en tu teléfono</p>
-            <p className="flex items-center gap-2"><span className="font-bold text-green-600">2.</span> Ve a Configuración → Dispositivos vinculados</p>
-            <p className="flex items-center gap-2"><span className="font-bold text-green-600">3.</span> Toca "Vincular un dispositivo"</p>
-            <p className="flex items-center gap-2"><span className="font-bold text-green-600">4.</span> Escanea este código QR</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-[#0071BC]">1.</span> Abre WhatsApp en tu teléfono</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-[#0071BC]">2.</span> Ve a Configuración → Dispositivos vinculados</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-[#0071BC]">3.</span> Toca "Vincular un dispositivo"</p>
+            <p className="flex items-center gap-2"><span className="font-bold text-[#0071BC]">4.</span> Escanea este código QR</p>
           </div>
         </div>
       </div>
@@ -191,9 +191,9 @@ const Messages = () => {
   // Loading screen
   if (!whatsappStatus.ready) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#0071BC] mx-auto mb-4"></div>
           <p className="text-xl text-gray-700 font-semibold">Iniciando WhatsApp...</p>
         </div>
       </div>
