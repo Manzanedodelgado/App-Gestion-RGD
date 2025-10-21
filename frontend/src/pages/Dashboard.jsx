@@ -26,6 +26,7 @@ function DashboardContent() {
   const [todayAppointments, setTodayAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
   const [whatsappStatus, setWhatsappStatus] = useState({ ready: false });
+  const [priorityConversations, setPriorityConversations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -35,15 +36,22 @@ function DashboardContent() {
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const [appointmentsRes, patientsRes, whatsappRes] = await Promise.all([
+      const [appointmentsRes, patientsRes, whatsappRes, conversationsRes] = await Promise.all([
         axios.get(`${API}/appointments`),
         axios.get(`${API}/patients`),
-        axios.get(`${API}/whatsapp/status`)
+        axios.get(`${API}/whatsapp/status`),
+        axios.get(`${API}/conversations`)
       ]);
 
       setAppointments(appointmentsRes.data);
       setPatients(patientsRes.data);
       setWhatsappStatus(whatsappRes.data);
+      
+      // Filtrar conversaciones prioritarias (AZUL y AMARILLO)
+      const priority = conversationsRes.data.filter(conv => 
+        conv.color_code === 'AZUL' || conv.color_code === 'AMARILLO'
+      );
+      setPriorityConversations(priority);
 
       const today = format(new Date(), 'yyyy-MM-dd');
       const filtered = appointmentsRes.data.filter(apt => {
@@ -60,14 +68,14 @@ function DashboardContent() {
       setAppointments([]);
       setTodayAppointments([]);
       setPatients([]);
+      setPriorityConversations([]);
     }
     setIsLoading(false);
   };
 
   const confirmedToday = todayAppointments.filter(a => a.reminder_sent).length;
-  const priorityConversations = 1; // Mock data
-  const amarilloCount = 1;
-  const azulCount = 0;
+  const amarilloCount = priorityConversations.filter(c => c.color_code === 'AMARILLO').length;
+  const azulCount = priorityConversations.filter(c => c.color_code === 'AZUL').length;
 
   return (
     <div className="min-h-screen">
