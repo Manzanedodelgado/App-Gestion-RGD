@@ -308,10 +308,15 @@ const Messages = () => {
 
       {/* Columna 3: Info del contacto (solo en pantallas grandes) */}
       {showContactInfo && selectedContact && (
-        <ContactInfo
-          contact={selectedContact}
-          onUpdateContact={handleUpdateContact}
-        />
+        <>
+          {/* Separador amarillo vibrante #facc15 */}
+          <div className="w-1 bg-[#facc15] flex-shrink-0"></div>
+          
+          <ContactInfo
+            contact={selectedContact}
+            onUpdateContact={handleUpdateContact}
+          />
+        </>
       )}
     </div>
   );
