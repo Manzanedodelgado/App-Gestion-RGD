@@ -32,7 +32,7 @@ async def get_conversations(color: str = None):
         if color:
             query['color_code'] = color
         
-        conversations = await db.conversations.find(query).sort('last_message_at', -1).to_list(None)
+        conversations = await db.conversations.find(query, {'_id': 0}).sort('last_message_at', -1).to_list(None)
         return conversations
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
