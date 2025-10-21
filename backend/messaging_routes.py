@@ -41,7 +41,7 @@ async def get_conversations(color: str = None):
 async def get_conversation(conversation_id: str):
     """Get a specific conversation"""
     try:
-        conversation = await db.conversations.find_one({'id': conversation_id})
+        conversation = await db.conversations.find_one({'id': conversation_id}, {'_id': 0})
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
         return conversation
