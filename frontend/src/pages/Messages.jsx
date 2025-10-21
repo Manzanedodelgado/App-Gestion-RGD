@@ -124,7 +124,7 @@ const Messages = () => {
       case 'AZUL':
         return 'bg-blue-100 border-l-4 border-blue-500';
       case 'VERDE':
-        return 'bg-green-100 border-l-4 border-green-500';
+        return 'bg-orange-100 border-l-4 border-orange-400';
       default:
         return 'bg-gray-100';
     }
@@ -137,7 +137,7 @@ const Messages = () => {
       case 'AZUL':
         return <span className="px-2 py-1 text-xs font-semibold bg-blue-500 text-white rounded">Atención</span>;
       case 'VERDE':
-        return <span className="px-2 py-1 text-xs font-semibold bg-green-500 text-white rounded">Resuelta</span>;
+        return <span className="px-2 py-1 text-xs font-semibold bg-orange-400 text-white rounded">Resuelta</span>;
       default:
         return null;
     }
