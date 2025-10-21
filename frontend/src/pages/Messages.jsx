@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { io } from 'socket.io-client';
 import { Search, MoreVertical, Send, Smile, Paperclip, Mic, Phone, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,75 +8,145 @@ import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-// Socket connection to WhatsApp service
-// In production, this would need to be proxied through the backend
-// For now, we'll use polling for QR updates instead of socket
-const SOCKET_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : null;
 
 const Messages = () => {
   const [whatsappStatus, setWhatsappStatus] = useState({ ready: false, hasQR: false });
   const [qrCode, setQrCode] = useState(null);
-  const [chats, setChats] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [socket, setSocket] = useState(null);
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     checkWhatsAppStatus();
+    fetchConversations();
     
-    // Only use socket in development (localhost)
-    if (SOCKET_URL) {
-      const socketConnection = io(SOCKET_URL);
-      setSocket(socketConnection);
-
-      socketConnection.on('qr', (qr) => {
-        setQrCode(qr);
-        setWhatsappStatus({ ready: false, hasQR: true });
-      });
-
-      socketConnection.on('ready', () => {
-        setWhatsappStatus({ ready: true, hasQR: false });
-        setQrCode(null);
-        fetchChats();
-        toast.success('WhatsApp conectado exitosamente');
-      });
-
-      socketConnection.on('authenticated', () => {
-        toast.success('Autenticación exitosa');
-      });
-
-      socketConnection.on('message', (message) => {
-        if (selectedChat && message.from === selectedChat.id) {
-          setMessages((prev) => [...prev, message]);
-        }
-        fetchChats();
-      });
-
-      socketConnection.on('disconnected', () => {
-        setWhatsappStatus({ ready: false, hasQR: false });
-        toast.error('WhatsApp desconectado');
-      });
-
-      return () => {
-        socketConnection.disconnect();
-      };
-    } else {
-      // In production, use polling instead of socket
-      const pollInterval = setInterval(() => {
-        checkWhatsAppStatus();
-      }, 3000); // Poll every 3 seconds
-      
-      return () => clearInterval(pollInterval);
-    }
+    // Poll for new messages
+    const pollInterval = setInterval(() => {
+      checkWhatsAppStatus();
+      fetchConversations();
+    }, 5000);
+    
+    return () => clearInterval(pollInterval);
   }, []);
 
   useEffect(() => {
-    if (whatsappStatus.ready) {
-      fetchChats();
-      const interval = setInterval(fetchChats, 10000);
+    if (selectedConversation) {
+      fetchMessages(selectedConversation.id);
+    }
+  }, [selectedConversation]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const checkWhatsAppStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/whatsapp/status`);
+      setWhatsappStatus(response.data);
+      
+      if (response.data.hasQR) {
+        const qrResponse = await axios.get(`${API}/whatsapp/qr`);
+        setQrCode(qrResponse.data.qr);
+      } else {
+        setQrCode(null);
+      }
+    } catch (error) {
+      console.error('Error checking WhatsApp status:', error);
+    }
+  };
+
+  const fetchConversations = async () => {
+    try {
+      const response = await axios.get(`${API}/conversations`);
+      setConversations(response.data);
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    }
+  };
+
+  const fetchMessages = async (conversationId) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API}/conversations/${conversationId}/messages`);
+      setMessages(response.data);
+      
+      // Mark as read
+      await axios.post(`${API}/conversations/${conversationId}/mark-read`);
+      
+      // Update conversation in list
+      setConversations(prev => 
+        prev.map(conv => 
+          conv.id === conversationId 
+            ? { ...conv, unread_count: 0 } 
+            : conv
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+      toast.error('Error al cargar mensajes');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedConversation) return;
+
+    try {
+      const response = await axios.post(
+        `${API}/conversations/${selectedConversation.id}/send`,
+        { message: newMessage }
+      );
+
+      if (response.data.success) {
+        setMessages(prev => [...prev, response.data.message]);
+        setNewMessage('');
+        toast.success('Mensaje enviado');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast.error('Error al enviar mensaje');
+    }
+  };
+
+  const getColorClass = (colorCode) => {
+    switch (colorCode) {
+      case 'AMARILLO':
+        return 'bg-yellow-100 border-l-4 border-yellow-500';
+      case 'AZUL':
+        return 'bg-blue-100 border-l-4 border-blue-500';
+      case 'VERDE':
+        return 'bg-green-100 border-l-4 border-green-500';
+      default:
+        return 'bg-gray-100';
+    }
+  };
+
+  const getColorBadge = (colorCode) => {
+    switch (colorCode) {
+      case 'AMARILLO':
+        return <span className="px-2 py-1 text-xs font-semibold bg-yellow-500 text-white rounded">Urgente</span>;
+      case 'AZUL':
+        return <span className="px-2 py-1 text-xs font-semibold bg-blue-500 text-white rounded">Atención</span>;
+      case 'VERDE':
+        return <span className="px-2 py-1 text-xs font-semibold bg-green-500 text-white rounded">Resuelta</span>;
+      default:
+        return null;
+    }
+  };
+
+  const filteredConversations = conversations.filter(conv =>
+    conv.contact_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    conv.contact_phone?.includes(searchQuery)
+  );
       return () => clearInterval(interval);
     }
   }, [whatsappStatus.ready]);
