@@ -98,7 +98,6 @@ async function connectToWhatsApp() {
           
           // Send to backend webhook for processing
           try {
-            const axios = require('axios');
             await axios.post('http://localhost:8001/api/whatsapp/webhook', messageData);
             console.log('✅ Message sent to backend webhook');
           } catch (error) {
