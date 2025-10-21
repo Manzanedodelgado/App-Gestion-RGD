@@ -1,4 +1,27 @@
 import React from 'react';
+import { CheckCheck, Check, Clock } from 'lucide-react';
+
+const MessageBubble = ({ message }) => {
+  const isOutbound = message.from_me;
+
+  const getStatusIcon = () => {
+    if (!isOutbound) return null;
+    
+    const now = new Date();
+    const msgTime = new Date(message.timestamp);
+    const diff = (now - msgTime) / 1000;
+
+    if (diff < 2) {
+      return <Clock size={12} className=\"text-gray-400\" />;
+    } else if (diff < 10) {
+      return <Check size={12} className=\"text-gray-400\" />;
+    } else {
+      return <CheckCheck size={12} className=\"text-blue-500\" />;
+    }
+  };
+
+  return (
+    <div className={`flex mb-3 ${isOutbound ? 'justify-end' : 'justify-start'}`}>\n      <div\n        className={`max-w-[70%] px-4 py-2 rounded-lg ${\n          isOutbound\n            ? 'bg-blue-100 text-gray-900'\n            : 'bg-gray-200 text-gray-900'\n        }`}\n      >\n        <p className=\"break-words whitespace-pre-wrap\">{message.text}</p>\n        \n        <div className=\"flex items-center justify-end gap-1 mt-1\">\n          <span className=\"text-xs text-gray-600\">\n            {new Date(message.timestamp).toLocaleTimeString('es-ES', {\n              hour: '2-digit',\n              minute: '2-digit'\n            })}\n          </span>\n          {getStatusIcon()}\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default MessageBubble;
 import { CheckCheck, Check, Clock, Bot } from 'lucide-react';
 
 const MessageBubble = ({ message }) => {
