@@ -158,7 +158,7 @@ async def whatsapp_send_message(db, whatsapp_service_url: str, conversation_id: 
                     'timestamp': datetime.now(timezone.utc).isoformat(),
                     'created_at': datetime.now(timezone.utc).isoformat()
                 }
-                await db.messages.insert_one(message)
+                await db.messages.insert_one(message.copy())
                 
                 # Update conversation
                 await db.conversations.update_one(
@@ -171,6 +171,9 @@ async def whatsapp_send_message(db, whatsapp_service_url: str, conversation_id: 
                         }
                     }
                 )
+                
+                # Remove _id from message before returning (MongoDB adds it automatically)
+                message.pop('_id', None)
                 
                 print(f"✅ Message sent to {contact_phone}")
                 return {'success': True, 'message': message}
