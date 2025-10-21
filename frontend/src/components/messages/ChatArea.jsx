@@ -113,7 +113,7 @@ const ChatArea = ({
                 <ArrowLeft size={20} />
               </Button>
             )}
-            <div className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold">
+            <div className="w-10 h-10 rounded-full bg-white text-[#312ea3] flex items-center justify-center font-semibold text-lg">
               {selectedContact.contact_name?.charAt(0).toUpperCase()}
             </div>
             <div>
