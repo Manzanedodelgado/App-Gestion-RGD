@@ -182,8 +182,6 @@ const Messages = () => {
   const handleNewChat = () => {
     toast.info('Función de nuevo chat próximamente');
   };
-    }
-  };
 
   const handleUpdateContact = async (updatedContact) => {
     try {
