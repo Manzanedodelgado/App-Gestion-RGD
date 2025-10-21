@@ -100,19 +100,37 @@ const Messages = () => {
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation) return;
 
+    const tempMessage = {
+      id: Date.now().toString(),
+      text: newMessage,
+      from_me: true,
+      timestamp: new Date().toISOString(),
+      conversation_id: selectedConversation.id
+    };
+
     try {
+      // Añadir mensaje inmediatamente para feedback instantáneo
+      setMessages(prev => [...prev, tempMessage]);
+      setNewMessage('');
+
       const response = await axios.post(
         `${API}/conversations/${selectedConversation.id}/send`,
         { message: newMessage }
       );
 
       if (response.data.success) {
-        setMessages(prev => [...prev, response.data.message]);
-        setNewMessage('');
+        // Actualizar con el mensaje real del servidor
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === tempMessage.id ? response.data.message : msg
+          )
+        );
         toast.success('Mensaje enviado');
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      // Eliminar mensaje temporal si falla
+      setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
       toast.error('Error al enviar mensaje');
     }
   };
@@ -124,7 +142,7 @@ const Messages = () => {
       case 'AZUL':
         return 'bg-blue-100 border-l-4 border-blue-500';
       case 'VERDE':
-        return 'bg-orange-100 border-l-4 border-orange-400';
+        return 'bg-green-100 border-l-4 border-green-500';
       default:
         return 'bg-gray-100';
     }
@@ -137,7 +155,7 @@ const Messages = () => {
       case 'AZUL':
         return <span className="px-2 py-1 text-xs font-semibold bg-blue-500 text-white rounded">Atención</span>;
       case 'VERDE':
-        return <span className="px-2 py-1 text-xs font-semibold bg-orange-400 text-white rounded">Resuelta</span>;
+        return <span className="px-2 py-1 text-xs font-semibold bg-green-500 text-white rounded">Resuelta</span>;
       default:
         return null;
     }
