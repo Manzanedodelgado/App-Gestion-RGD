@@ -132,9 +132,9 @@ const ConversationList = ({
   }, [conversations, searchQuery, filter]);
 
   return (
-    <div className="flex flex-col h-full bg-slate-50">
-      {/* Cabecera con fondo azul oscuro corporativo #283593 */}
-      <div className="p-4 bg-[#283593] text-white">
+    <div className="flex flex-col h-full bg-[#312ea3]">
+      {/* Cabecera con fondo azul oscuro #312ea3 */}
+      <div className="p-4 bg-[#312ea3] text-white">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold">Chats</h2>
           <Button 
