@@ -291,8 +291,8 @@ const Messages = () => {
         />
       </div>
 
-      {/* Separador amarillo vibrante #facc15 */}
-      <div className="w-1 bg-[#facc15] flex-shrink-0"></div>
+      {/* Separador amarillo vibrante #facc15 - más grueso */}
+      <div className="w-2 bg-[#facc15] flex-shrink-0"></div>
 
       {/* Columna 2: Área de chat */}
       <div className="flex-1">
