@@ -4,6 +4,7 @@ Converts voice messages to text
 """
 import os
 from openai import OpenAI
+from datetime import datetime, timezone
 
 # Initialize OpenAI client for Whisper transcription
 # Note: OpenRouter doesn't support Whisper, so we'll use OpenAI directly if available
