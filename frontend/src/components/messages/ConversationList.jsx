@@ -77,8 +77,8 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
             {/* Menú de 3 puntos */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                  <MoreVertical size={14} className="text-gray-400" />
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-300 hover:text-white">
+                  <MoreVertical size={14} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
