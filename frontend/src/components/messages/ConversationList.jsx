@@ -39,8 +39,8 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
   return (
     <div
       onClick={() => onSelect(conversation)}
-      className={`flex items-start p-3 cursor-pointer border-b border-gray-200 ${getColorBorder(conversation.color_code)} ${
-        isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'
+      className={`flex items-start p-3 cursor-pointer border-b border-[#2820a0] ${getColorBorder(conversation.color_code)} ${
+        isSelected ? 'bg-[#3e38b8]' : 'hover:bg-[#3932a8]'
       }`}
     >
       {/* Avatar simple */}
