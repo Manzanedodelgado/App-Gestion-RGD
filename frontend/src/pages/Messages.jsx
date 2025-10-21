@@ -205,9 +205,9 @@ const Messages = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Conversations List */}
       <div className="w-1/3 bg-white border-r border-gray-300 flex flex-col">
-        <div className="p-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
+        <div className="p-4 bg-gradient-to-r from-[#2E3192] to-[#0071BC] text-white">
           <h2 className="text-xl font-bold">WhatsApp Pro Web</h2>
-          <p className="text-sm text-green-100">
+          <p className="text-sm text-blue-100">
             {conversations.length} conversacion{conversations.length !== 1 ? 'es' : ''}
           </p>
         </div>
