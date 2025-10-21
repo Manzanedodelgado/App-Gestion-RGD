@@ -94,6 +94,7 @@ async function connectToWhatsApp() {
   });
 }
 
+
 // REST API endpoints
 app.get('/status', (req, res) => {
   res.json({
@@ -118,14 +119,14 @@ app.post('/send-message', async (req, res) => {
     return res.status(400).json({ error: 'Number and message are required' });
   }
 
-  if (!isReady) {
+  if (!isReady || !sock) {
     return res.status(503).json({ error: 'WhatsApp client not ready' });
   }
 
   try {
-    // Format number properly (add @c.us if not present)
-    const chatId = number.includes('@') ? number : `${number}@c.us`;
-    await client.sendMessage(chatId, message);
+    // Format number properly for Baileys (add @s.whatsapp.net if not present)
+    const jid = number.includes('@') ? number : `${number}@s.whatsapp.net`;
+    await sock.sendMessage(jid, { text: message });
     console.log(`✅ Message sent to ${number}`);
     res.json({ success: true, message: 'Message sent successfully' });
   } catch (error) {
@@ -135,19 +136,23 @@ app.post('/send-message', async (req, res) => {
 });
 
 app.get('/chats', async (req, res) => {
-  if (!isReady) {
+  if (!isReady || !sock) {
     return res.status(503).json({ error: 'WhatsApp client not ready' });
   }
 
   try {
-    const allChats = await client.getChats();
-    chats = allChats.map(chat => ({
-      id: chat.id._serialized,
-      name: chat.name,
-      isGroup: chat.isGroup,
-      unreadCount: chat.unreadCount,
-      timestamp: chat.timestamp
+    // Get all chats from Baileys
+    const allChats = await sock.groupFetchAllParticipating();
+    const personalChats = Object.values(allChats).filter(chat => !chat.id.endsWith('@g.us'));
+    
+    chats = personalChats.map(chat => ({
+      id: chat.id,
+      name: chat.subject || chat.id.split('@')[0],
+      isGroup: false,
+      unreadCount: 0,
+      timestamp: Date.now()
     }));
+    
     res.json(chats);
   } catch (error) {
     console.error('Error getting chats:', error);
@@ -156,22 +161,14 @@ app.get('/chats', async (req, res) => {
 });
 
 app.get('/messages/:chatId', async (req, res) => {
-  if (!isReady) {
+  if (!isReady || !sock) {
     return res.status(503).json({ error: 'WhatsApp client not ready' });
   }
 
   try {
-    const chat = await client.getChatById(req.params.chatId);
-    const chatMessages = await chat.fetchMessages({ limit: 50 });
-    const formattedMessages = chatMessages.map(msg => ({
-      id: msg.id._serialized,
-      body: msg.body,
-      from: msg.from,
-      to: msg.to,
-      timestamp: msg.timestamp,
-      fromMe: msg.fromMe
-    }));
-    res.json(formattedMessages);
+    // Baileys doesn't have a built-in way to fetch message history easily
+    // For now, return empty array. In production, you'd store messages in a database
+    res.json([]);
   } catch (error) {
     console.error('Error getting messages:', error);
     res.status(500).json({ error: 'Failed to get messages' });
@@ -180,7 +177,9 @@ app.get('/messages/:chatId', async (req, res) => {
 
 app.post('/logout', async (req, res) => {
   try {
-    await client.logout();
+    if (sock) {
+      await sock.logout();
+    }
     isReady = false;
     qrCode = null;
     clientInfo = null;
