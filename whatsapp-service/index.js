@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const QRCode = require('qrcode');
 const cors = require('cors');
+const axios = require('axios');
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const { Boom } = require('@hapi/boom');
 
