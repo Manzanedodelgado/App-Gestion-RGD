@@ -309,8 +309,8 @@ const Messages = () => {
       {/* Columna 3: Info del contacto (solo en pantallas grandes) */}
       {showContactInfo && selectedContact && (
         <>
-          {/* Separador amarillo vibrante #facc15 */}
-          <div className="w-1 bg-[#facc15] flex-shrink-0"></div>
+          {/* Separador amarillo vibrante #facc15 - más grueso */}
+          <div className="w-2 bg-[#facc15] flex-shrink-0"></div>
           
           <ContactInfo
             contact={selectedContact}
