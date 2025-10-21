@@ -39,13 +39,13 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
   return (
     <div
       onClick={() => onSelect(conversation)}
-      className={`flex items-start p-3 cursor-pointer border-b border-[#2820a0] ${getColorBorder(conversation.color_code)} ${
+      className={`flex items-start p-3 cursor-pointer border-b border-[#2820a0] ${
         isSelected ? 'bg-[#3e38b8]' : 'hover:bg-[#3932a8]'
       }`}
     >
-      {/* Avatar simple */}
+      {/* Avatar con color según clasificación */}
       <div className="flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-white text-[#312ea3] flex items-center justify-center font-semibold text-lg">
+        <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg ${getAvatarColor(conversation.color_code)}`}>
           {conversation.contact_name?.charAt(0).toUpperCase() || '?'}
         </div>
       </div>
