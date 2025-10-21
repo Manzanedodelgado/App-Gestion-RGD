@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, Archive, Trash2, MoreHorizontal } from 'lucide-react';
+import { Search, Plus, MoreVertical, Archive, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,22 +11,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDelete }) => {
-  const getColorBar = (colorCode) => {
+  const getColorBorder = (colorCode) => {
     const colors = {
-      'AMARILLO': 'bg-gradient-to-b from-yellow-400 to-yellow-500',
-      'AZUL': 'bg-gradient-to-b from-blue-400 to-blue-500',
-      'VERDE': 'bg-gradient-to-b from-green-400 to-green-500'
+      'AMARILLO': 'border-l-4 border-yellow-500',
+      'AZUL': 'border-l-4 border-blue-500',
+      'VERDE': 'border-l-4 border-green-500'
     };
-    return colors[colorCode] || 'bg-gray-300';
-  };
-
-  const getColorDot = (colorCode) => {
-    const colors = {
-      'AMARILLO': 'bg-yellow-500',
-      'AZUL': 'bg-blue-500',
-      'VERDE': 'bg-green-500'
-    };
-    return colors[colorCode] || 'bg-gray-400';
+    return colors[colorCode] || 'border-l-4 border-gray-300';
   };
 
   const formatTime = (timestamp) => {
@@ -37,7 +28,7 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
     
     if (hours < 24) {
       return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    } else if (hours < 168) { // menos de una semana
+    } else if (hours < 168) {
       const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
       return days[date.getDay()];
     } else {
@@ -48,73 +39,56 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
   return (
     <div
       onClick={() => onSelect(conversation)}
-      className={`group relative flex items-start p-4 cursor-pointer transition-all duration-200 border-b border-gray-100 
-        ${isSelected 
-          ? 'bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm' 
-          : 'hover:bg-gray-50 hover:shadow-sm'
-        }`}
+      className={`flex items-start p-3 cursor-pointer border-b border-gray-200 ${getColorBorder(conversation.color_code)} ${
+        isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'
+      }`}
     >
-      {/* Barra de color lateral con gradiente */}
-      <div className={`absolute left-0 top-0 bottom-0 w-1 ${getColorBar(conversation.color_code)} rounded-r-full`} />
-      
-      {/* Avatar con gradiente y sombra */}
-      <div className="flex-shrink-0 ml-3 relative">
-        <div className={`w-14 h-14 rounded-full bg-gradient-to-br from-[#0071BC] to-[#2E3192] text-white flex items-center justify-center font-bold text-lg shadow-md transition-transform group-hover:scale-105`}>
+      {/* Avatar simple */}
+      <div className="flex-shrink-0">
+        <div className="w-12 h-12 rounded-full bg-gray-400 text-white flex items-center justify-center font-semibold">
           {conversation.contact_name?.charAt(0).toUpperCase() || '?'}
         </div>
-        {/* Indicador de color pequeño */}
-        <div className={`absolute bottom-0 right-0 w-4 h-4 ${getColorDot(conversation.color_code)} rounded-full border-2 border-white shadow-sm`} />
       </div>
 
       {/* Contenido */}
-      <div className="flex-1 ml-4 min-w-0">
+      <div className="flex-1 ml-3 min-w-0">
         <div className="flex justify-between items-start mb-1">
-          <h4 className={`font-semibold truncate ${isSelected ? 'text-[#2E3192]' : 'text-gray-900'}`}>
+          {/* NOMBRE EN MAYÚSCULAS */}
+          <h4 className="font-semibold text-gray-900 truncate uppercase">
             {conversation.contact_name}
           </h4>
-          <span className="text-xs text-gray-500 flex-shrink-0 ml-2 font-medium">
+          <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
             {formatTime(conversation.last_message_at)}
           </span>
         </div>
         
-        <p className={`text-sm truncate mb-2 ${
-          conversation.unread_count > 0 ? 'text-gray-700 font-medium' : 'text-gray-500'
-        }`}>
-          {conversation.last_message}
-        </p>
+        <p className="text-sm text-gray-600 truncate mb-1">{conversation.last_message}</p>
         
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-400 font-mono">{conversation.contact_phone}</span>
+          <span className="text-xs text-gray-400">{conversation.contact_phone}</span>
           
           <div className="flex items-center gap-2">
             {conversation.unread_count > 0 && (
-              <span className="bg-gradient-to-r from-[#0071BC] to-[#2E3192] text-white text-xs font-bold rounded-full px-2.5 py-1 shadow-sm animate-pulse">
+              <span className="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-0.5">
                 {conversation.unread_count}
               </span>
             )}
             
-            {/* Menú de acciones */}
+            {/* Menú de 3 puntos */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <MoreHorizontal size={16} className="text-gray-400" />
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                  <MoreVertical size={14} className="text-gray-400" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onArchive(conversation); }}>
                   <Archive className="mr-2 h-4 w-4" />
-                  Archivar conversación
+                  Archivar
                 </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={(e) => { e.stopPropagation(); onDelete(conversation); }}
-                  className="text-red-600"
-                >
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDelete(conversation); }}>
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Eliminar conversación
+                  Eliminar
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -130,7 +104,8 @@ const ConversationList = ({
   selectedContact, 
   onSelectContact,
   onArchive,
-  onDelete 
+  onDelete,
+  onNewChat 
 }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filter, setFilter] = React.useState('all');
@@ -157,82 +132,69 @@ const ConversationList = ({
   }, [conversations, searchQuery, filter]);
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-white to-gray-50 border-r border-gray-200 shadow-sm">
-      {/* Header con gradiente mejorado */}
-      <div className="p-5 bg-gradient-to-r from-[#2E3192] via-[#0071BC] to-[#65C8D0] text-white shadow-md">
-        <h2 className="text-2xl font-bold mb-1">Mensajes</h2>
-        <p className="text-sm text-blue-100 font-medium">
-          {conversations.length} conversación{conversations.length !== 1 ? 'es' : ''} activa{conversations.length !== 1 ? 's' : ''}
-        </p>
+    <div className="flex flex-col h-full bg-slate-50">
+      {/* Cabecera con fondo azul oscuro corporativo */}
+      <div className="p-4 bg-[#2E3192] text-white">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold">Chats</h2>
+          <Button 
+            onClick={onNewChat}
+            size="sm" 
+            variant="ghost" 
+            className="text-white hover:bg-white/20"
+          >
+            <Plus size={20} />
+          </Button>
+        </div>
+        
+        {/* Filtros en la cabecera */}
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setFilter('all')}
+            className={`text-white hover:bg-white/20 ${filter === 'all' ? 'bg-white/20' : ''}`}
+          >
+            Todos
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setFilter('unread')}
+            className={`text-white hover:bg-white/20 ${filter === 'unread' ? 'bg-white/20' : ''}`}
+          >
+            No leídos
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setFilter('priority')}
+            className={`text-white hover:bg-white/20 ${filter === 'priority' ? 'bg-white/20' : ''}`}
+          >
+            Prioritarios
+          </Button>
+        </div>
       </div>
 
-      {/* Búsqueda mejorada */}
-      <div className="p-4 bg-white border-b border-gray-200">
+      {/* Búsqueda con fondo oscuro */}
+      <div className="p-3 bg-[#2E3192] border-b border-[#1E2082]">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300" size={18} />
           <Input
             type="text"
-            placeholder="Buscar por nombre o teléfono..."
+            placeholder="Buscar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 w-full border-gray-300 focus:border-[#0071BC] focus:ring-[#0071BC] rounded-lg shadow-sm"
+            className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-300"
           />
         </div>
       </div>
 
-      {/* Filtros refinados */}
-      <div className="flex gap-2 p-4 bg-white border-b border-gray-200">
-        <Button
-          variant={filter === 'all' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('all')}
-          className={`transition-all ${
-            filter === 'all' 
-              ? 'bg-gradient-to-r from-[#0071BC] to-[#2E3192] shadow-md' 
-              : 'hover:bg-gray-100'
-          }`}
-        >
-          Todos
-        </Button>
-        <Button
-          variant={filter === 'unread' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('unread')}
-          className={`transition-all ${
-            filter === 'unread' 
-              ? 'bg-gradient-to-r from-[#0071BC] to-[#2E3192] shadow-md' 
-              : 'hover:bg-gray-100'
-          }`}
-        >
-          No leídos
-        </Button>
-        <Button
-          variant={filter === 'priority' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('priority')}
-          className={`transition-all ${
-            filter === 'priority' 
-              ? 'bg-gradient-to-r from-[#0071BC] to-[#2E3192] shadow-md' 
-              : 'hover:bg-gray-100'
-          }`}
-        >
-          Prioritarios
-        </Button>
-      </div>
-
-      {/* Lista de conversaciones */}
-      <ScrollArea className="flex-1 bg-white">
+      {/* Lista de conversaciones con fondo slate-50 */}
+      <ScrollArea className="flex-1">
         {filteredConversations.length === 0 ? (
-          <div className="p-12 text-center">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <Search className="text-gray-400" size={32} />
-            </div>
-            <p className="text-lg font-semibold text-gray-700 mb-2">
-              {searchQuery ? 'No se encontraron resultados' : 'No hay conversaciones'}
-            </p>
-            <p className="text-sm text-gray-500">
-              {searchQuery ? 'Intenta con otros términos de búsqueda' : 'Los nuevos mensajes aparecerán aquí'}
-            </p>
+          <div className="p-8 text-center text-gray-500">
+            <p>No hay conversaciones</p>
           </div>
         ) : (
           filteredConversations.map((conv) => (
@@ -251,6 +213,4 @@ const ConversationList = ({
   );
 };
 
-
 export default ConversationList;
-
