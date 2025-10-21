@@ -82,7 +82,7 @@ const ContactInfo = ({ contact, onUpdateContact, appointments = [] }) => {
 
         {/* Avatar y nombre */}
         <div className="text-center mb-4">
-          <div className="w-20 h-20 rounded-full bg-gray-400 text-white flex items-center justify-center font-bold text-2xl mx-auto mb-2">
+          <div className="w-20 h-20 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center font-bold text-2xl mx-auto mb-2">
             {contact.name?.charAt(0).toUpperCase() || contact.contact_name?.charAt(0).toUpperCase() || '?'}
           </div>
           <h2 className="text-xl font-bold text-gray-900 uppercase">
