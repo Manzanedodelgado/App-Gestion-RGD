@@ -103,7 +103,7 @@ const ChatArea = ({
   }
 
   return (
-    <div className={`flex flex-col h-full bg-[#e0f2fe] ${getBorderClass(selectedContact.color_code)}`}>
+    <div className="flex flex-col h-full bg-[#e0f2fe]">
       {/* Cabecera con fondo azul claro */}
       <div className="p-4 bg-[#e0f2fe] border-b border-gray-300">
         <div className="flex items-center justify-between">
