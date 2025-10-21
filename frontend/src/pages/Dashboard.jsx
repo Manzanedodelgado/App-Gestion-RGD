@@ -202,35 +202,48 @@ function DashboardContent() {
                     </p>
                   </div>
                 </div>
-                <div className="text-3xl font-bold text-white">{priorityConversations}</div>
+                <div className="text-3xl font-bold text-white">{priorityConversations.length}</div>
               </div>
             </CardHeader>
             <CardContent className="p-4 max-h-[400px] overflow-y-auto">
-              {priorityConversations === 0 ? (
+              {priorityConversations.length === 0 ? (
                 <div className="text-center py-12">
                   <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                   <p className="text-sm text-gray-500">No hay conversaciones prioritarias pendientes</p>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Link
-                    to="/messages"
-                    className="flex items-center gap-3 p-3 bg-white border-l-4 border-[#FBBF24] rounded-lg hover:shadow transition-shadow"
-                  >
-                    <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#FBBF24] to-[#F59E0B] rounded-full flex items-center justify-center">
-                        <span className="text-white font-semibold text-base">J</span>
-                      </div>
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-[#FBBF24] rounded-full border-2 border-white shadow-sm" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-gray-900 truncate">JUAN ANTONIO MANZANEDO DELGADO</h4>
-                      <p className="text-xs text-gray-600 truncate mt-0.5">HOLA</p>
-                      <p className="text-xs text-[#F59E0B] italic truncate mt-1">
-                        Clasificación manual
-                      </p>
-                    </div>
-                  </Link>
+                  {priorityConversations.map((conv) => {
+                    const isUrgent = conv.color_code === 'AMARILLO';
+                    const borderColor = isUrgent ? 'border-[#FBBF24]' : 'border-[#0071BC]';
+                    const avatarBg = isUrgent ? 'from-[#FBBF24] to-[#F59E0B]' : 'from-[#0071BC] to-[#0000FF]';
+                    const dotColor = isUrgent ? 'bg-[#FBBF24]' : 'bg-[#0071BC]';
+                    const textColor = isUrgent ? 'text-[#F59E0B]' : 'text-[#0071BC]';
+                    
+                    return (
+                      <Link
+                        key={conv.id}
+                        to="/messages"
+                        className={`flex items-center gap-3 p-3 bg-white border-l-4 ${borderColor} rounded-lg hover:shadow transition-shadow`}
+                      >
+                        <div className="relative flex-shrink-0">
+                          <div className={`w-12 h-12 bg-gradient-to-br ${avatarBg} rounded-full flex items-center justify-center`}>
+                            <span className="text-white font-semibold text-base">
+                              {conv.contact_name?.charAt(0).toUpperCase() || '?'}
+                            </span>
+                          </div>
+                          <div className={`absolute -bottom-1 -right-1 w-3 h-3 ${dotColor} rounded-full border-2 border-white shadow-sm`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-gray-900 truncate uppercase">{conv.contact_name}</h4>
+                          <p className="text-xs text-gray-600 truncate mt-0.5">{conv.last_message}</p>
+                          <p className={`text-xs ${textColor} italic truncate mt-1`}>
+                            {isUrgent ? 'Urgente' : 'Requiere atención'}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
