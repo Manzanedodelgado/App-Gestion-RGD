@@ -54,15 +54,15 @@ const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDel
       <div className="flex-1 ml-3 min-w-0">
         <div className="flex justify-between items-start mb-1">
           {/* NOMBRE EN MAYÚSCULAS */}
-          <h4 className="font-semibold text-gray-900 truncate uppercase">
+          <h4 className="font-semibold text-white truncate uppercase">
             {conversation.contact_name}
           </h4>
-          <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
+          <span className="text-xs text-gray-300 flex-shrink-0 ml-2">
             {formatTime(conversation.last_message_at)}
           </span>
         </div>
         
-        <p className="text-sm text-gray-600 truncate mb-1">{conversation.last_message}</p>
+        <p className="text-sm text-gray-300 truncate mb-1">{conversation.last_message}</p>
         
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-400">{conversation.contact_phone}</span>
