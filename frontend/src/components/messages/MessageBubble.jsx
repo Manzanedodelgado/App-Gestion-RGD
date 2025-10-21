@@ -12,11 +12,11 @@ const MessageBubble = ({ message }) => {
     const diff = (now - msgTime) / 1000;
 
     if (diff < 2) {
-      return <Clock size={12} className="text-gray-400" />;
+      return <Clock size={12} className="text-white" />;
     } else if (diff < 10) {
-      return <Check size={12} className="text-gray-400" />;
+      return <Check size={12} className="text-white" />;
     } else {
-      return <CheckCheck size={12} className="text-blue-500" />;
+      return <CheckCheck size={12} className="text-white" />;
     }
   };
 
