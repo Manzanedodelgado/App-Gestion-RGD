@@ -83,11 +83,26 @@ async function connectToWhatsApp() {
       for (const msg of messages) {
         if (!msg.key.fromMe && msg.message) {
           console.log('New message received:', msg.key.remoteJid);
-          io.emit('message', {
+          
+          const messageData = {
             from: msg.key.remoteJid,
             body: msg.message.conversation || msg.message.extendedTextMessage?.text || '',
-            timestamp: msg.messageTimestamp
-          });
+            type: msg.message.audioMessage ? 'audio' : 'text',
+            timestamp: msg.messageTimestamp,
+            pushname: msg.pushName || msg.key.remoteJid.split('@')[0]
+          };
+          
+          // Emit to socket
+          io.emit('message', messageData);
+          
+          // Send to backend webhook for processing
+          try {
+            const axios = require('axios');
+            await axios.post('http://localhost:8001/api/whatsapp/webhook', messageData);
+            console.log('✅ Message sent to backend webhook');
+          } catch (error) {
+            console.error('❌ Error sending to webhook:', error.message);
+          }
         }
       }
     }
