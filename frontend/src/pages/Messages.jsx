@@ -302,12 +302,12 @@ const Messages = () => {
                     <div
                       className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-lg shadow ${
                         msg.from_me
-                          ? 'bg-green-500 text-white'
+                          ? 'bg-[#0071BC] text-white'
                           : 'bg-white text-gray-800'
                       }`}
                     >
                       <p className="break-words">{msg.text}</p>
-                      <p className={`text-xs mt-1 ${msg.from_me ? 'text-green-100' : 'text-gray-500'}`}>
+                      <p className={`text-xs mt-1 ${msg.from_me ? 'text-blue-100' : 'text-gray-500'}`}>
                         {new Date(msg.timestamp).toLocaleTimeString('es-ES', {
                           hour: '2-digit',
                           minute: '2-digit'
