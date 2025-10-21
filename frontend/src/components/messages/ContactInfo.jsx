@@ -30,7 +30,7 @@ const ContactInfo = ({ contact, onUpdateContact, appointments = [] }) => {
 
   if (!contact) {
     return (
-      <div className="w-80 bg-slate-50 border-l border-gray-200 flex items-center justify-center">
+      <div className="w-80 bg-white border-l border-gray-200 flex items-center justify-center">
         <p className="text-gray-500">Selecciona un contacto</p>
       </div>
     );
@@ -47,7 +47,7 @@ const ContactInfo = ({ contact, onUpdateContact, appointments = [] }) => {
   });
 
   return (
-    <div className="w-80 bg-slate-50 border-l border-gray-200 flex flex-col">
+    <div className="w-80 bg-white flex flex-col">
       {/* Cabecera con avatar y botones */}
       <div className="p-4 bg-white border-b border-gray-200">
         <div className="flex justify-between items-start mb-4">
