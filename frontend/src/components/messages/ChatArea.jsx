@@ -103,9 +103,9 @@ const ChatArea = ({
   }
 
   return (
-    <div className={`flex flex-col h-full bg-white ${getBorderClass(selectedContact.color_code)}`}>
-      {/* Cabecera con degradado de grises */}
-      <div className="p-4 bg-gradient-to-r from-gray-100 to-gray-200 border-b border-gray-300">
+    <div className={`flex flex-col h-full bg-[#e0f2fe] ${getBorderClass(selectedContact.color_code)}`}>
+      {/* Cabecera con fondo azul claro */}
+      <div className="p-4 bg-[#e0f2fe] border-b border-gray-300">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {isMobile && onBack && (
