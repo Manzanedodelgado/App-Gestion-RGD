@@ -13,11 +13,11 @@ import {
 const ConversationItem = ({ conversation, isSelected, onSelect, onArchive, onDelete }) => {
   const getColorBorder = (colorCode) => {
     const colors = {
-      'AMARILLO': 'border-l-4 border-yellow-500',
-      'AZUL': 'border-l-4 border-blue-500',
-      'VERDE': 'border-l-4 border-green-500'
+      'AMARILLO': 'border-l-8 border-yellow-500',
+      'AZUL': 'border-l-8 border-blue-500',
+      'VERDE': 'border-l-8 border-green-500'
     };
-    return colors[colorCode] || 'border-l-4 border-gray-300';
+    return colors[colorCode] || '';
   };
 
   const formatTime = (timestamp) => {
