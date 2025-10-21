@@ -190,8 +190,8 @@ const ConversationList = ({
         </div>
       </div>
 
-      {/* Lista de conversaciones con fondo slate-50 */}
-      <ScrollArea className="flex-1">
+      {/* Lista de conversaciones con fondo azul oscuro */}
+      <ScrollArea className="flex-1 bg-[#312ea3]">
         {filteredConversations.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <p>No hay conversaciones</p>
