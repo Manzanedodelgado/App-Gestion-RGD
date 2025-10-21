@@ -25,8 +25,8 @@ const MessageBubble = ({ message }) => {
       <div
         className={`max-w-[70%] px-4 py-2 rounded-lg ${
           isOutbound
-            ? 'bg-blue-100 text-gray-900'
-            : 'bg-gray-200 text-gray-900'
+            ? 'bg-[#2563eb] text-white'
+            : 'bg-[#dbeafe] text-gray-900'
         }`}
       >
         <p className="break-words whitespace-pre-wrap">{message.text}</p>
