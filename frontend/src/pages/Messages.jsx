@@ -336,7 +336,7 @@ const Messages = () => {
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                 className="flex-1"
               />
-              <Button onClick={sendMessage} className="bg-green-600 hover:bg-green-700">
+              <Button onClick={sendMessage} className="bg-[#0071BC] hover:bg-[#2E3192]">
                 <Send size={20} />
               </Button>
               <Button variant="ghost" size="icon">
