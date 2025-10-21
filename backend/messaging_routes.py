@@ -159,7 +159,7 @@ async def get_contacts(search: str = None):
                 {'phone': {'$regex': search, '$options': 'i'}}
             ]
         
-        contacts = await db.contacts.find(query).sort('updated_at', -1).to_list(None)
+        contacts = await db.contacts.find(query, {'_id': 0}).sort('updated_at', -1).to_list(None)
         return contacts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
