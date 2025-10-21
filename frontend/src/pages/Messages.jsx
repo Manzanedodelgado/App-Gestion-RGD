@@ -246,7 +246,7 @@ const Messages = () => {
                     {getColorBadge(conv.color_code)}
                   </div>
                   {conv.unread_count > 0 && (
-                    <span className="bg-green-600 text-white text-xs font-bold rounded-full px-2 py-1">
+                    <span className="bg-[#0071BC] text-white text-xs font-bold rounded-full px-2 py-1">
                       {conv.unread_count}
                     </span>
                   )}
