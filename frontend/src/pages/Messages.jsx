@@ -158,6 +158,30 @@ const Messages = () => {
       setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
       toast.error('Error al enviar mensaje');
       throw error;
+
+  };
+
+  const handleClassify = async (conversationId, classification) => {
+    try {
+      // Actualizar localmente
+      setSelectedContact(prev => ({ ...prev, color_code: classification }));
+      setConversations(prev =>
+        prev.map(conv =>
+          conv.id === conversationId ? { ...conv, color_code: classification } : conv
+        )
+      );
+      
+      // TODO: Llamar API para guardar clasificación
+      toast.success(`Conversación clasificada como: ${classification || 'Sin clasificar'}`);
+    } catch (error) {
+      console.error('Error classifying:', error);
+      toast.error('Error al clasificar');
+    }
+  };
+
+  const handleNewChat = () => {
+    toast.info('Función de nuevo chat próximamente');
+  };
     }
   };
 
