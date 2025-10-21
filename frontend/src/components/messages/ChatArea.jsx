@@ -151,8 +151,8 @@ const ChatArea = ({
         </div>
       </div>
 
-      {/* Messages Area simple */}
-      <ScrollArea className="flex-1 p-4 bg-white">
+      {/* Messages Area con fondo azul claro */}
+      <ScrollArea className="flex-1 p-4 bg-[#e0f2fe]">
         {messages.length === 0 ? (
           <div className="flex justify-center items-center h-full text-gray-500">
             <p>No hay mensajes</p>
