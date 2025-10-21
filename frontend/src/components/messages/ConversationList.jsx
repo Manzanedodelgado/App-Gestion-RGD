@@ -133,8 +133,8 @@ const ConversationList = ({
 
   return (
     <div className="flex flex-col h-full bg-slate-50">
-      {/* Cabecera con fondo azul oscuro corporativo */}
-      <div className="p-4 bg-[#2E3192] text-white">
+      {/* Cabecera con fondo azul oscuro corporativo #283593 */}
+      <div className="p-4 bg-[#283593] text-white">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold">Chats</h2>
           <Button 
@@ -153,7 +153,7 @@ const ConversationList = ({
             variant="ghost"
             size="sm"
             onClick={() => setFilter('all')}
-            className={`text-white hover:bg-white/20 ${filter === 'all' ? 'bg-white/20' : ''}`}
+            className={`text-white hover:bg-white/20 ${filter === 'all' ? 'bg-[#42A5F5]' : ''}`}
           >
             Todos
           </Button>
@@ -161,7 +161,7 @@ const ConversationList = ({
             variant="ghost"
             size="sm"
             onClick={() => setFilter('unread')}
-            className={`text-white hover:bg-white/20 ${filter === 'unread' ? 'bg-white/20' : ''}`}
+            className={`text-white hover:bg-white/20 ${filter === 'unread' ? 'bg-[#42A5F5]' : ''}`}
           >
             No leídos
           </Button>
@@ -169,7 +169,7 @@ const ConversationList = ({
             variant="ghost"
             size="sm"
             onClick={() => setFilter('priority')}
-            className={`text-white hover:bg-white/20 ${filter === 'priority' ? 'bg-white/20' : ''}`}
+            className={`text-white hover:bg-white/20 ${filter === 'priority' ? 'bg-[#42A5F5]' : ''}`}
           >
             Prioritarios
           </Button>
@@ -177,7 +177,7 @@ const ConversationList = ({
       </div>
 
       {/* Búsqueda con fondo oscuro */}
-      <div className="p-3 bg-[#2E3192] border-b border-[#1E2082]">
+      <div className="p-3 bg-[#283593] border-b border-[#1E2082]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300" size={18} />
           <Input
