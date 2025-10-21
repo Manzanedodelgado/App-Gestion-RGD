@@ -837,10 +837,11 @@ async def handle_button_response(request: Dict):
 
 # Webhook endpoint for incoming WhatsApp messages
 @api_router.post("/whatsapp/webhook")
-async def whatsapp_webhook(request: Dict):
+async def whatsapp_webhook(request: Request):
     """Webhook to receive incoming WhatsApp messages"""
     try:
-        result = await handle_whatsapp_incoming(db, request)
+        message_data = await request.json()
+        result = await handle_whatsapp_incoming(db, message_data)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
