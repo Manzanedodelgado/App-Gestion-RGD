@@ -14,9 +14,9 @@ const ContactInfo = ({ contact, onUpdateContact, appointments = [] }) => {
 
   const getAvatarColor = (colorCode) => {
     const colors = {
-      'AMARILLO': 'bg-yellow-400 text-gray-900',
-      'AZUL': 'bg-blue-500 text-white',
-      'VERDE': 'bg-green-500 text-white'
+      'AMARILLO': 'bg-white text-yellow-500 border-2 border-yellow-500',
+      'AZUL': 'bg-white text-blue-600 border-2 border-blue-600',
+      'VERDE': 'bg-white text-green-600 border-2 border-green-600'
     };
     return colors[colorCode] || 'bg-gray-300 text-gray-700';
   };
