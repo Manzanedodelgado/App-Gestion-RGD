@@ -237,7 +237,7 @@ const Messages = () => {
                 key={conv.id}
                 onClick={() => setSelectedConversation(conv)}
                 className={`p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
-                  selectedConversation?.id === conv.id ? 'bg-green-50' : ''
+                  selectedConversation?.id === conv.id ? 'bg-blue-50' : ''
                 } ${getColorClass(conv.color_code)}`}
               >
                 <div className="flex justify-between items-start mb-1">
