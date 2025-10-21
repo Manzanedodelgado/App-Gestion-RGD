@@ -82,15 +82,6 @@ const ChatArea = ({
     }
   };
 
-  const getBorderClass = (colorCode) => {
-    const borders = {
-      'AMARILLO': 'border-l-[12px] border-yellow-500',
-      'AZUL': 'border-l-[12px] border-blue-500',
-      'VERDE': 'border-l-[12px] border-green-500'
-    };
-    return borders[colorCode] || '';
-  };
-
   if (!selectedContact) {
     return (
       <div className="flex-1 flex items-center justify-center bg-white">
