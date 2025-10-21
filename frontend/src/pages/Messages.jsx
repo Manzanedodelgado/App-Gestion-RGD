@@ -264,20 +264,20 @@ const Messages = () => {
         {selectedConversation ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 bg-gradient-to-r from-green-600 to-green-700 text-white flex justify-between items-center">
+            <div className="p-4 bg-gradient-to-r from-[#2E3192] to-[#0071BC] text-white flex justify-between items-center">
               <div>
                 <h3 className="font-bold text-lg">{selectedConversation.contact_name}</h3>
-                <p className="text-sm text-green-100">{selectedConversation.contact_phone}</p>
+                <p className="text-sm text-blue-100">{selectedConversation.contact_phone}</p>
               </div>
               <div className="flex gap-2">
                 {getColorBadge(selectedConversation.color_code)}
-                <Button variant="ghost" size="sm" className="text-white hover:bg-green-700">
+                <Button variant="ghost" size="sm" className="text-white hover:bg-blue-700">
                   <Phone size={20} />
                 </Button>
-                <Button variant="ghost" size="sm" className="text-white hover:bg-green-700">
+                <Button variant="ghost" size="sm" className="text-white hover:bg-blue-700">
                   <Video size={20} />
                 </Button>
-                <Button variant="ghost" size="sm" className="text-white hover:bg-green-700">
+                <Button variant="ghost" size="sm" className="text-white hover:bg-blue-700">
                   <MoreVertical size={20} />
                 </Button>
               </div>
