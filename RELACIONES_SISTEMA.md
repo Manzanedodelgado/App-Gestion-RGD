@@ -265,6 +265,18 @@
 - [ ] Verificar ChatArea (área de conversación)
 - [ ] Verificar que aparezcan en el muro después de enviar
 
+### Al modificar PLANTILLAS:
+- [ ] Actualizar Templates.jsx (orquestador)
+- [ ] Actualizar TemplateList.jsx (lista)
+- [ ] Actualizar TemplateForm.jsx (formulario)
+- [ ] Actualizar TemplateStep.jsx (pasos)
+- [ ] Actualizar ButtonActions.jsx (acciones de botones)
+- [ ] Actualizar TemplatePreview.jsx (vista previa)
+- [ ] Verificar processAutomations.js (motor backend)
+- [ ] Verificar handleWhatsAppResponse.js (respuestas)
+- [ ] Verificar processCsvAndSchedule.js (envíos masivos)
+- [ ] Probar flujo completo: Crear → Automatizar → Enviar → Responder
+
 ---
 
 ## 📝 HISTORIAL DE CAMBIOS
