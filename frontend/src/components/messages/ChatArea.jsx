@@ -249,7 +249,7 @@ const ChatArea = ({
             )}
           </Button>
           
-          <Button variant="ghost" size="icon" className="flex-shrink-0">
+          <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={handleVoiceRecord}>
             <Mic className="text-gray-600" size={20} />
           </Button>
         </div>
