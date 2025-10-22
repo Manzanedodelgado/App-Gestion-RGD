@@ -94,7 +94,9 @@ const TemplateForm = ({ template, onSave, onClose }) => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    
     console.log('=== HANDLE SUBMIT EJECUTADO ===');
     console.log('Form data:', formData);
     
