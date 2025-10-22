@@ -101,11 +101,12 @@ class WhatsAppStatus(BaseModel):
 @api_router.get("/whatsapp/status")
 async def get_whatsapp_status():
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(f"{WHATSAPP_SERVICE_URL}/status")
             return response.json()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"❌ Error getting WhatsApp status: {e}")
+        return {"ready": False, "hasQR": False, "error": str(e)}
 
 @api_router.get("/whatsapp/qr")
 async def get_whatsapp_qr():
