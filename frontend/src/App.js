@@ -5,7 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
 import Patients from './pages/Patients';
 import AppointmentsNew from './pages/AppointmentsNew';
-import Automations from './pages/Automations';
+import Templates from './pages/Templates';
 
 function App() {
   return (
