@@ -65,6 +65,27 @@ const ChatArea = ({
     }
   };
 
+  const handleAttachFile = () => {
+    // Crear input file temporal
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,application/pdf,.doc,.docx';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // TODO: Implementar subida de archivo
+        console.log('Archivo seleccionado:', file.name);
+        alert(`Archivo seleccionado: ${file.name}\n\nFuncionalidad de envío de archivos próximamente.`);
+      }
+    };
+    input.click();
+  };
+
+  const handleVoiceRecord = () => {
+    // TODO: Implementar grabación de voz
+    alert('Funcionalidad de grabación de voz próximamente.');
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
