@@ -7,9 +7,13 @@ from automation_service import AIAssistant
 
 ai_assistant = AIAssistant()
 
-async def classify_single_conversation(db, conversation_id: str):
-    """
-    Classify a single conversation based on recent messages
+async def classify_single_conversation(db, conversation_id: str, force=False):
+    """Classify a single conversation using AI
+    
+    Args:
+        db: Database connection
+        conversation_id: ID of the conversation
+        force: If False, won't overwrite existing manual classification
     """
     try:
         # Get conversation
@@ -17,6 +21,11 @@ async def classify_single_conversation(db, conversation_id: str):
         
         if not conversation:
             return {'success': False, 'error': 'Conversation not found'}
+        
+        # Skip if already classified and not forcing
+        if not force and conversation.get('color_code'):
+            print(f"⏭️ Conversation already classified as {conversation.get('color_code')} - skipping")
+            return {'success': True, 'classification': conversation.get('color_code'), 'skipped': True}
         
         # Get recent messages (last 5)
         messages = await db.messages.find(
