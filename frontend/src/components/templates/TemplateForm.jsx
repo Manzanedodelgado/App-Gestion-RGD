@@ -240,7 +240,11 @@ const TemplateForm = ({ template, onSave, onClose }) => {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            <Button 
+              type="button" 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={handleSubmit}
+            >
               {template ? 'Actualizar' : 'Crear'} Plantilla
             </Button>
           </div>
