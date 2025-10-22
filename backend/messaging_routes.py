@@ -111,10 +111,10 @@ async def classify_conversations():
         raise HTTPException(status_code=500, detail=str(e))
 
 @messaging_router.post("/conversations/{conversation_id}/classify")
-async def classify_conversation(conversation_id: str):
-    """Classify a single conversation"""
+async def classify_conversation(conversation_id: str, force: bool = False):
+    """Classify a single conversation - use force=true to overwrite existing classification"""
     try:
-        result = await classify_single_conversation(db, conversation_id)
+        result = await classify_single_conversation(db, conversation_id, force=force)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
