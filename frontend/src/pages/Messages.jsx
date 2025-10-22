@@ -191,7 +191,38 @@ const Messages = () => {
   };
 
   const handleNewChat = () => {
-    toast.info('Función de nuevo chat próximamente');
+    const name = prompt('Nombre del contacto:');
+    if (!name) return;
+    
+    const phone = prompt('Número de teléfono (con código de país, ej: 34600000000):');
+    if (!phone) return;
+    
+    // TODO: Crear contacto y conversación en el backend
+    toast.info('Funcionalidad de nuevo chat en desarrollo. Por ahora puedes iniciar conversaciones cuando recibes mensajes.');
+  };
+
+  const handleArchive = (conversationId) => {
+    // TODO: Implementar archivo de conversación
+    toast.info('Funcionalidad de archivar próximamente');
+  };
+
+  const handleDelete = async (conversationId) => {
+    if (!window.confirm('¿Estás seguro de eliminar esta conversación?')) return;
+    
+    try {
+      // TODO: Implementar eliminación en el backend
+      // await axios.delete(`${API}/conversations/${conversationId}`);
+      
+      // Por ahora solo remover localmente
+      setConversations(prev => prev.filter(c => c.id !== conversationId));
+      if (selectedContact?.id === conversationId) {
+        setSelectedContact(null);
+      }
+      toast.success('Conversación eliminada (solo local por ahora)');
+    } catch (error) {
+      console.error('Error deleting:', error);
+      toast.error('Error al eliminar');
+    }
   };
 
   const handleUpdateContact = async (updatedContact) => {
