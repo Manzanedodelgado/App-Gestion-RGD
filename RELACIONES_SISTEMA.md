@@ -122,6 +122,88 @@
 
 ---
 
+### 5. PLANTILLAS (MessageTemplate, Automation, ConsentTemplate)
+
+**Fuente de datos**: MongoDB `message_templates`, `automations`, `consent_templates`
+
+**Entidades**:
+- `MessageTemplate` - Plantillas de mensajes con pasos y botones
+- `Automation` - Automatizaciones asociadas a plantillas
+- `ConsentTemplate` - Plantillas de consentimientos
+
+**Campos clave de MessageTemplate**:
+- `id` - UUID único
+- `name` - Nombre de la plantilla (ej: "Recordatorio 24h")
+- `category` - Categoría (confirmación, consentimiento, etc.)
+- `steps` - Array de pasos del flujo
+  - Cada step contiene:
+    - `content` - Texto del mensaje (con variables {{nombre}})
+    - `attachments` - Archivos adjuntos (PDF, imágenes)
+    - `buttons` - Botones interactivos
+      - Cada button contiene:
+        - `text` - Texto del botón
+        - `actions` - Array de acciones a ejecutar:
+          - `send_message` - Enviar respuesta de texto
+          - `update_appointment_status` - Cambiar estado de cita
+          - `start_flow` - Iniciar otra automatización
+          - `send_consent` - Enviar enlace de consentimiento
+
+**Componentes FRONTEND**:
+
+1. **pages/Templates.jsx** (Orquestador Principal)
+   - Carga las 3 listas: MessageTemplate, Automation, ConsentTemplate
+   - Gestiona estado del formulario (crear/editar)
+   - Distribuye datos a TemplateList y TemplatePreview
+
+2. **components/templates/TemplateList.jsx** (Lista de Plantillas)
+   - Muestra todas las plantillas creadas
+   - Acciones: Previsualizar, Editar, Eliminar
+
+3. **components/templates/TemplateForm.jsx** (Diseñador de Flujos)
+   - Formulario modal para crear/editar plantillas
+   - Información general (nombre, categoría)
+   - Constructor de pasos (TemplateStep.jsx)
+   - Diseñador de acciones (ButtonActions.jsx)
+
+4. **components/templates/TemplateStep.jsx** (Constructor de Pasos)
+   - Permite reordenar pasos (drag & drop)
+   - Define contenido del mensaje
+   - Sube documentos adjuntos
+   - Crea botones interactivos
+
+5. **components/templates/ButtonActions.jsx** (Diseñador de Acciones)
+   - Define acciones para cada botón
+   - Tipos: Enviar Mensaje, Actualizar Estado, Iniciar Flujo, Enviar Consentimiento
+
+6. **components/templates/TemplatePreview.jsx** (Vista Previa)
+   - Muestra estructura de la plantilla seleccionada
+   - Vista rápida sin abrir el formulario
+
+**Funciones BACKEND**:
+
+1. **functions/processAutomations.js** (Motor de Automatización)
+   - Se ejecuta periódicamente o por evento
+   - Busca plantilla asociada a automatización
+   - Construye y envía mensaje al paciente
+
+2. **functions/handleWhatsAppResponse.js** (Gestor de Respuestas)
+   - Maneja respuestas a botones
+   - Lee acciones definidas en la plantilla
+   - Ejecuta acciones una por una
+
+3. **functions/processCsvAndSchedule.js** (Envíos Masivos)
+   - Procesa CSV con lista de contactos
+   - Usa plantilla seleccionada
+   - Personaliza y programa envíos
+
+**⚠️ REGLA DE CONSISTENCIA - PLANTILLAS**:
+- Cada plantilla debe tener al menos 1 paso
+- Las variables deben usar formato {{variable}}
+- Las acciones de botones deben estar bien definidas
+- Al modificar una plantilla, verificar que no rompa automatizaciones activas
+
+---
+
 ## 🎨 COLORES CORPORATIVOS
 
 ### Azul Corporativo
