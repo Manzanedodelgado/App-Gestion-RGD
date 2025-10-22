@@ -83,10 +83,16 @@ const ChatArea = ({
   };
 
   const getAvatarColor = (colorCode) => {
+    if (!colorCode) {
+      // Sin clasificar: fondo blanco, letra azul oscuro
+      return 'bg-white text-[#312ea3] border-2 border-gray-300';
+    }
+    
+    // Con clasificación: fondo del color, letra blanca
     const colors = {
-      'AMARILLO': 'bg-white text-yellow-500 border-2 border-yellow-500',
-      'AZUL': 'bg-white text-blue-600 border-2 border-blue-600',
-      'VERDE': 'bg-white text-green-600 border-2 border-green-600'
+      'AMARILLO': 'bg-yellow-500 text-white',
+      'AZUL': 'bg-blue-600 text-white',
+      'VERDE': 'bg-green-600 text-white'
     };
     return colors[colorCode] || 'bg-white text-[#312ea3] border-2 border-gray-300';
   };
