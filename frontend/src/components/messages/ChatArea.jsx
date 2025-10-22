@@ -65,25 +65,39 @@ const ChatArea = ({
     }
   };
 
-  const handleAttachFile = () => {
-    // Crear input file temporal
+  const handleAttachFile = async () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*,application/pdf,.doc,.docx';
     input.onchange = async (e) => {
       const file = e.target.files[0];
-      if (file) {
-        // TODO: Implementar subida de archivo
-        console.log('Archivo seleccionado:', file.name);
-        alert(`Archivo seleccionado: ${file.name}\n\nFuncionalidad de envío de archivos próximamente.`);
+      if (!file) return;
+      
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('conversation_id', selectedContact.id);
+        
+        // TODO: Implementar endpoint de subida
+        // await axios.post(`${API}/conversations/${selectedContact.id}/upload`, formData);
+        
+        toast.success(`Archivo ${file.name} seleccionado. Funcionalidad de envío en desarrollo.`);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        toast.error('Error al subir archivo');
       }
     };
     input.click();
   };
 
-  const handleVoiceRecord = () => {
-    // TODO: Implementar grabación de voz
-    alert('Funcionalidad de grabación de voz próximamente.');
+  const handleVoiceRecord = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      toast.success('Micrófono activado. Funcionalidad de grabación en desarrollo.');
+      stream.getTracks().forEach(track => track.stop());
+    } catch (error) {
+      toast.error('No se puede acceder al micrófono');
+    }
   };
 
   const handleKeyPress = (e) => {
