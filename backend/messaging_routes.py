@@ -183,10 +183,6 @@ async def remove_classification(conversation_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 
 @messaging_router.post("/conversations/button-response")
 async def handle_button_response(request: Request):
