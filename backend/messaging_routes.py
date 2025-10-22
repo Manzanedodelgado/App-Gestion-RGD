@@ -149,7 +149,9 @@ async def set_manual_classification(conversation_id: str, classification: str):
         
         return {"success": True, "classification": classification}
     except HTTPException:
-
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @messaging_router.delete("/conversations/{conversation_id}/classification")
 async def remove_classification(conversation_id: str):
