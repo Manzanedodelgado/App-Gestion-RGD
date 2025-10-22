@@ -200,24 +200,32 @@ const TemplateForm = ({ template, onSave, onClose }) => {
                   </div>
 
                   {step.buttons && step.buttons.length > 0 && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {step.buttons.map((button) => (
-                        <div key={button.id} className="flex items-center gap-2">
-                          <Input
-                            value={button.text}
-                            onChange={(e) => handleButtonChange(step.id, button.id, e.target.value)}
-                            placeholder="Texto del botón"
-                            className="flex-1"
+                        <div key={button.id} className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Input
+                              value={button.text}
+                              onChange={(e) => handleButtonChange(step.id, button.id, { ...button, text: e.target.value })}
+                              placeholder="Texto del botón (ej: Confirmar, Cancelar)"
+                              className="flex-1"
+                            />
+                            <Button
+                              type="button"
+                              onClick={() => handleRemoveButton(step.id, button.id)}
+                              size="sm"
+                              variant="ghost"
+                              className="text-red-600"
+                            >
+                              <X size={14} />
+                            </Button>
+                          </div>
+                          
+                          {/* Acciones del botón */}
+                          <ButtonActions
+                            button={button}
+                            onChange={(updatedButton) => handleButtonChange(step.id, button.id, updatedButton)}
                           />
-                          <Button
-                            type="button"
-                            onClick={() => handleRemoveButton(step.id, button.id)}
-                            size="sm"
-                            variant="ghost"
-                            className="text-red-600"
-                          >
-                            <X size={14} />
-                          </Button>
                         </div>
                       ))}
                     </div>
