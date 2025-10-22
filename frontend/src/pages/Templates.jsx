@@ -67,19 +67,29 @@ const Templates = () => {
   };
 
   const handleSave = async (templateData) => {
+    console.log('=== GUARDANDO PLANTILLA ===');
+    console.log('Template data:', JSON.stringify(templateData, null, 2));
+    
     try {
       if (editingTemplate) {
-        await axios.put(`${API}/message-templates/${editingTemplate.id}`, templateData);
+        console.log('Actualizando plantilla existente:', editingTemplate.id);
+        const response = await axios.put(`${API}/message-templates/${editingTemplate.id}`, templateData);
+        console.log('Respuesta PUT:', response.data);
         toast.success('Plantilla actualizada');
       } else {
-        await axios.post(`${API}/message-templates`, templateData);
+        console.log('Creando nueva plantilla en:', `${API}/message-templates`);
+        const response = await axios.post(`${API}/message-templates`, templateData);
+        console.log('Respuesta POST:', response.data);
         toast.success('Plantilla creada');
       }
       setShowForm(false);
       loadData();
     } catch (error) {
-      console.error('Error saving template:', error);
-      toast.error('Error al guardar plantilla');
+      console.error('=== ERROR AL GUARDAR ===');
+      console.error('Error completo:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      toast.error(`Error al guardar plantilla: ${error.response?.data?.detail || error.message}`);
     }
   };
 
