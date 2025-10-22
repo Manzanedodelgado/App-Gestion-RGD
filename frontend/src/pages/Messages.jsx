@@ -244,16 +244,6 @@ const Messages = () => {
     }
   };
 
-  const handleArchive = async (conversation) => {
-    toast.info('Función de archivar próximamente');
-  };
-
-  const handleDelete = async (conversation) => {
-    if (window.confirm('¿Eliminar esta conversación?')) {
-      toast.info('Función de eliminar próximamente');
-    }
-  };
-
   // QR Code screen
   if (!whatsappStatus.ready && qrCode) {
     return (
