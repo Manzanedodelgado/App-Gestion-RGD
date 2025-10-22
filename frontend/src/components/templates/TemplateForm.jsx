@@ -94,8 +94,10 @@ const TemplateForm = ({ template, onSave, onClose }) => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
+    console.log('=== HANDLE SUBMIT EJECUTADO ===');
+    console.log('Form data:', formData);
+    
     if (!formData.name.trim()) {
       alert('Por favor ingresa un nombre para la plantilla');
       return;
@@ -104,6 +106,8 @@ const TemplateForm = ({ template, onSave, onClose }) => {
       alert('Agrega al menos un paso a la plantilla');
       return;
     }
+    
+    console.log('Validaciones pasadas, llamando onSave...');
     onSave(formData);
   };
 
