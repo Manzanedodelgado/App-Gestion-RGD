@@ -105,6 +105,55 @@ async def delete_conversation(conversation_id: str):
         
         return {"success": True, "message": "Conversation deleted"}
     except HTTPException:
+
+
+@messaging_router.post("/contacts")
+async def create_contact(contact_data: dict):
+    """Crear un nuevo contacto"""
+    try:
+        from datetime import datetime, timezone
+        import uuid
+        
+        contact = {
+            'id': str(uuid.uuid4()),
+            'name': contact_data['name'],
+            'phone': contact_data['phone'],
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.contacts.insert_one(contact)
+        contact.pop('_id', None)
+        
+        return contact
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@messaging_router.post("/conversations")
+async def create_conversation(conversation_data: dict):
+    """Crear una nueva conversación"""
+    try:
+        from datetime import datetime, timezone
+        import uuid
+        
+        conversation = {
+            'id': str(uuid.uuid4()),
+            'contact_id': conversation_data['contact_id'],
+            'contact_name': conversation_data['contact_name'],
+            'contact_phone': conversation_data['contact_phone'],
+            'last_message': '',
+            'last_message_at': datetime.now(timezone.utc).isoformat(),
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.conversations.insert_one(conversation)
+        conversation.pop('_id', None)
+        
+        return conversation
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
