@@ -149,6 +149,38 @@ async def set_manual_classification(conversation_id: str, classification: str):
         
         return {"success": True, "classification": classification}
     except HTTPException:
+
+
+@messaging_router.delete("/conversations/{conversation_id}/classification")
+async def remove_classification(conversation_id: str):
+    """Remove classification from conversation"""
+    try:
+        from datetime import datetime, timezone
+        
+        # Remove classification and manual flag
+        result = await db.conversations.update_one(
+            {'id': conversation_id},
+            {
+                '$unset': {
+                    'color_code': '',
+                    'manually_classified': '',
+                    'classified_at': ''
+                },
+                '$set': {
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        return {"success": True, "message": "Classification removed"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
