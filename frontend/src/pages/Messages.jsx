@@ -190,35 +190,64 @@ const Messages = () => {
     }
   };
 
-  const handleNewChat = () => {
+  const handleNewChat = async () => {
     const name = prompt('Nombre del contacto:');
-    if (!name) return;
+    if (!name || !name.trim()) return;
     
     const phone = prompt('Número de teléfono (con código de país, ej: 34600000000):');
-    if (!phone) return;
-    
-    // TODO: Crear contacto y conversación en el backend
-    toast.info('Funcionalidad de nuevo chat en desarrollo. Por ahora puedes iniciar conversaciones cuando recibes mensajes.');
-  };
-
-  const handleArchive = (conversationId) => {
-    // TODO: Implementar archivo de conversación
-    toast.info('Funcionalidad de archivar próximamente');
-  };
-
-  const handleDelete = async (conversationId) => {
-    if (!window.confirm('¿Estás seguro de eliminar esta conversación?')) return;
+    if (!phone || !phone.trim()) return;
     
     try {
-      // TODO: Implementar eliminación en el backend
-      // await axios.delete(`${API}/conversations/${conversationId}`);
+      // Crear contacto
+      const contactRes = await axios.post(`${API}/contacts`, {
+        name: name.trim(),
+        phone: phone.trim()
+      });
       
-      // Por ahora solo remover localmente
+      // Crear conversación
+      const convRes = await axios.post(`${API}/conversations`, {
+        contact_id: contactRes.data.id,
+        contact_name: name.trim(),
+        contact_phone: phone.trim()
+      });
+      
+      toast.success('Nuevo chat creado');
+      fetchConversations();
+      setSelectedContact(convRes.data);
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      toast.error('Error al crear chat');
+    }
+  };
+
+  const handleArchive = async (conversationId) => {
+    try {
+      await axios.put(`${API}/conversations/${conversationId}`, {
+        archived: true
+      });
+      
       setConversations(prev => prev.filter(c => c.id !== conversationId));
       if (selectedContact?.id === conversationId) {
         setSelectedContact(null);
       }
-      toast.success('Conversación eliminada (solo local por ahora)');
+      toast.success('Conversación archivada');
+    } catch (error) {
+      console.error('Error archiving:', error);
+      toast.error('Error al archivar');
+    }
+  };
+
+  const handleDelete = async (conversationId) => {
+    if (!window.confirm('¿Estás seguro de eliminar esta conversación? Esta acción no se puede deshacer.')) return;
+    
+    try {
+      await axios.delete(`${API}/conversations/${conversationId}`);
+      
+      setConversations(prev => prev.filter(c => c.id !== conversationId));
+      if (selectedContact?.id === conversationId) {
+        setSelectedContact(null);
+      }
+      toast.success('Conversación eliminada');
     } catch (error) {
       console.error('Error deleting:', error);
       toast.error('Error al eliminar');
