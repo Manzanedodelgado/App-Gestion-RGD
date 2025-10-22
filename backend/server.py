@@ -730,6 +730,22 @@ print("   - Botones interactivos")
 print("   - Transcripción de audio (pendiente configurar Whisper)")
 
 
+
+# ============================================
+# TEMPLATE SYSTEM - Plantillas y Automatizaciones
+# ============================================
+
+from template_routes import template_router
+
+# Include template router
+app.include_router(template_router, prefix="/api")
+
+print("✅ Sistema de plantillas iniciado")
+print("   - Plantillas de mensajes con pasos y botones")
+print("   - Plantillas de consentimientos")
+print("   - Automatizaciones")
+
+
 # ============================================
 # AUTOMATIC REMINDERS
 # ============================================
