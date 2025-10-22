@@ -610,7 +610,7 @@ const AppointmentsNew = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock size={14} style={{ color: '#0071BC' }} />
-                  <span className="font-medium">{apt.hora}</span>
+                  <span className="font-medium">{format(new Date(apt.date), 'HH:mm')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users size={14} style={{ color: '#0071BC' }} />
