@@ -13,10 +13,16 @@ const ContactInfo = ({ contact, onUpdateContact, appointments = [] }) => {
   const [editedContact, setEditedContact] = useState(contact || {});
 
   const getAvatarColor = (colorCode) => {
+    if (!colorCode) {
+      // Sin clasificar: fondo gris, letra gris oscuro
+      return 'bg-gray-300 text-gray-700';
+    }
+    
+    // Con clasificación: fondo del color, letra blanca
     const colors = {
-      'AMARILLO': 'bg-white text-yellow-500 border-2 border-yellow-500',
-      'AZUL': 'bg-white text-blue-600 border-2 border-blue-600',
-      'VERDE': 'bg-white text-green-600 border-2 border-green-600'
+      'AMARILLO': 'bg-yellow-500 text-white',
+      'AZUL': 'bg-blue-600 text-white',
+      'VERDE': 'bg-green-600 text-white'
     };
     return colors[colorCode] || 'bg-gray-300 text-gray-700';
   };
