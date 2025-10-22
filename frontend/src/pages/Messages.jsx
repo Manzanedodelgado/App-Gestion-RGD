@@ -165,6 +165,16 @@ const Messages = () => {
 
   const handleClassify = async (conversationId, classification) => {
     try {
+      // Llamar API para guardar clasificación MANUAL
+      if (classification) {
+        await axios.post(`${API}/conversations/${conversationId}/set-classification`, null, {
+          params: { classification }
+        });
+      } else {
+        // Si es null, eliminar clasificación
+        await axios.delete(`${API}/conversations/${conversationId}/classification`);
+      }
+      
       // Actualizar localmente
       setSelectedContact(prev => ({ ...prev, color_code: classification }));
       setConversations(prev =>
@@ -173,7 +183,6 @@ const Messages = () => {
         )
       );
       
-      // TODO: Llamar API para guardar clasificación
       toast.success(`Conversación clasificada como: ${classification || 'Sin clasificar'}`);
     } catch (error) {
       console.error('Error classifying:', error);
