@@ -89,6 +89,27 @@ async def send_message_to_conversation(conversation_id: str, request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@messaging_router.delete("/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str):
+    """Eliminar una conversación y sus mensajes"""
+    try:
+        # Eliminar mensajes
+        await db.messages.delete_many({'conversation_id': conversation_id})
+        
+        # Eliminar conversación
+        result = await db.conversations.delete_one({'id': conversation_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        return {"success": True, "message": "Conversation deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @messaging_router.post("/conversations/{conversation_id}/mark-read")
 async def mark_conversation_read(conversation_id: str):
     """Mark conversation as read"""
