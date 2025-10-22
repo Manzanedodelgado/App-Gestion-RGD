@@ -24,6 +24,10 @@ async def classify_single_conversation(db, conversation_id: str, force=False):
         
         # Skip if already classified and not forcing
         if not force and conversation.get('color_code'):
+            # Also skip if manually classified
+            if conversation.get('manually_classified'):
+                print(f"⏭️ Conversation manually classified as {conversation.get('color_code')} - skipping auto-classification")
+                return {'success': True, 'classification': conversation.get('color_code'), 'skipped': True, 'reason': 'manual'}
             print(f"⏭️ Conversation already classified as {conversation.get('color_code')} - skipping")
             return {'success': True, 'classification': conversation.get('color_code'), 'skipped': True}
         
