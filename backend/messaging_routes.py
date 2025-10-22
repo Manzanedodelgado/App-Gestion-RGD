@@ -119,6 +119,41 @@ async def classify_conversation(conversation_id: str, force: bool = False):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@messaging_router.post("/conversations/{conversation_id}/set-classification")
+async def set_manual_classification(conversation_id: str, classification: str):
+    """Set manual classification (AMARILLO, AZUL, VERDE) - won't be overwritten by auto-classification"""
+    try:
+        from datetime import datetime, timezone
+        
+        # Validate classification
+        valid_classifications = ['AMARILLO', 'AZUL', 'VERDE']
+        if classification not in valid_classifications:
+            raise HTTPException(status_code=400, detail=f"Invalid classification. Must be one of: {valid_classifications}")
+        
+        # Update conversation with manual classification flag
+        result = await db.conversations.update_one(
+            {'id': conversation_id},
+            {
+                '$set': {
+                    'color_code': classification,
+                    'manually_classified': True,  # Flag to prevent auto-overwrite
+                    'classified_at': datetime.now(timezone.utc).isoformat(),
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        return {"success": True, "classification": classification}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @messaging_router.post("/conversations/button-response")
 async def handle_button_response(request: Request):
     """Handle button click response"""
