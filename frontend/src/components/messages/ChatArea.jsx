@@ -223,7 +223,7 @@ const ChatArea = ({
         
         {/* Área de entrada de texto */}
         <div className="flex items-end gap-2">
-          <Button variant="ghost" size="icon" className="flex-shrink-0">
+          <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={handleAttachFile}>
             <Paperclip className="text-gray-600" size={20} />
           </Button>
           
