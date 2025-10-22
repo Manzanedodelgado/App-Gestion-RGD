@@ -78,7 +78,7 @@ const TemplateForm = ({ template, onSave, onClose }) => {
     });
   };
 
-  const handleButtonChange = (stepId, buttonId, value) => {
+  const handleButtonChange = (stepId, buttonId, updatedButton) => {
     setFormData({
       ...formData,
       steps: formData.steps.map(s =>
@@ -86,7 +86,7 @@ const TemplateForm = ({ template, onSave, onClose }) => {
           ? {
               ...s,
               buttons: s.buttons.map(b =>
-                b.id === buttonId ? { ...b, text: value } : b
+                b.id === buttonId ? updatedButton : b
               )
             }
           : s
