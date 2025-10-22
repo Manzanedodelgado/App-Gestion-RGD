@@ -179,7 +179,7 @@ const TemplateForm = ({ template, onSave, onClose }) => {
                     rows={4}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Variables disponibles: {{"{nombre}"}} {{"{fecha}"}} {{"{hora}"}} {{"{doctor}"}}
+                    Variables disponibles: {`{{nombre}} {{fecha}} {{hora}} {{doctor}}`}
                   </p>
                 </div>
 
