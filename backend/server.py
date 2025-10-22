@@ -743,6 +743,22 @@ app.include_router(template_router, prefix="/api")
 print("✅ Sistema de plantillas iniciado")
 print("   - Plantillas de mensajes con pasos y botones")
 print("   - Plantillas de consentimientos")
+
+
+# ============================================
+# SYSTEM AND USER MANAGEMENT
+# ============================================
+
+from system_routes import system_router
+
+# Include system router
+app.include_router(system_router, prefix="/api")
+
+print("✅ Sistema de gestión iniciado")
+print("   - Health checks")
+print("   - Gestión de usuarios")
+print("   - Monitoreo de servicios")
+
 print("   - Automatizaciones")
 
 
