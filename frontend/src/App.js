@@ -7,6 +7,9 @@ import Patients from './pages/Patients';
 import AppointmentsNew from './pages/AppointmentsNew';
 import Automations from './pages/Automations';
 import Templates from './pages/Templates';
+import Consents from './pages/Consents';
+import Users from './pages/Users';
+import System from './pages/System';
 
 function App() {
   return (
