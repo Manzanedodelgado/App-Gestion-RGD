@@ -165,7 +165,7 @@ function DashboardContent() {
                       <div key={apt.id} className="flex items-start gap-3 p-3 bg-white border-l-4 border-[#0071BC] rounded-lg hover:shadow transition-shadow">
                         <div className="text-center min-w-[65px] flex-shrink-0">
                           <div className="text-lg font-bold text-white bg-gradient-to-br from-[#2E3192] to-[#0071BC] px-2 py-1.5 rounded-lg">
-                            {format(new Date(apt.date), 'HH:mm')}
+                            {apt.hora || format(new Date(apt.date), 'HH:mm')}
                           </div>
                           <p className="text-[10px] text-gray-500 mt-1.5">{apt.duration_minutes}</p>
                         </div>
